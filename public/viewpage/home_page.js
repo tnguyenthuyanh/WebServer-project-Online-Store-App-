@@ -64,7 +64,7 @@ export async function home_page() {
 }
 
 function buildProductView(product, index) {
-    return `
+    let html = `
     <div class="card" style="width: 18rem; display: inline-block;">
         <img src="${product.imageURL}" class="card-img-top">
         <div class="card-body">
@@ -73,6 +73,24 @@ function buildProductView(product, index) {
                 ${Util.currency(product.price)} <br>
                 ${product.summary}
             </p>
+    `;
+    if (Auth.currentUser && Constant.adminEmails.includes(Auth.currentUser.email)) 
+        html += `
+        </div>
+        <form class="form-edit-product float-start" method="post">
+            <input type="hidden" name="docId" value="${product.docId}">
+            <button class="btn btn-outline-primary" type="submit">Edit</button>
+        </form>
+        <form class="form-delete-product float-end" method="post">
+            <input type="hidden" name="docId" value="${product.docId}">
+            <input type="hidden" name="imageName" value="${product.imageName}">
+            <button class="btn btn-outline-danger" type="submit">Delete</button>
+        </form>
+    </div>
+    `;
+    
+    else 
+        html += `
             <div class="container pt-3 bg-light ${Auth.currentUser ? 'd-block' : 'd-none'}">
                 <form method="post" class="d-inline form-dec-qty">
                     <input type="hidden" name="index" value="${index}">
@@ -89,6 +107,8 @@ function buildProductView(product, index) {
         </div>
     </div>
     `;
+    
+    return html;
 }
 
 export function initShoppingCart() {

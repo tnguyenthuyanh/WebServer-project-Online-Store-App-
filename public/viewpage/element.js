@@ -9,11 +9,19 @@ export const menuSignout = document.getElementById('menu-signout');
 export const menuCart = document.getElementById('menu-cart');
 export const menuProfile = document.getElementById('menu-profile');
 export const shoppingCartCount = document.getElementById('shoppingcart-count');
+export const menuUsers = document.getElementById('menu-users');
+export const editPassword = document.getElementById('edit-password');
 
 // forms 
 export const formSignin = document.getElementById('form-signin');
 export const formSignup = document.getElementById('form-signup');
 export const formSignUpPasswordError = document.getElementById('form-signup-password-error');
+export const formEditPassword = document.getElementById('form-edit-password');
+export const formEditPasswordError = {
+    password: document.getElementById('edit-error-password'),
+    passwordConfirm: document.getElementById('edit-error-passwordConfirm'),
+};
+
 
 export const buttonSignup = document.getElementById('button-signup');
 
@@ -26,4 +34,6 @@ export const modalTransactionView = new bootstrap.Modal(document.getElementById(
 export const modalTransactionTitle = document.getElementById('modal-transaction-title');
 export const modalTransactionBody = document.getElementById('modal-transaction-body');
 export const modalSignup = new bootstrap.Modal(document.getElementById('modal-signup'), {backdrop: 'static'});
+export const modalEditPassword = new bootstrap.Modal(document.getElementById('modal-edit-password'), {backdrop: 'static'});
+
 

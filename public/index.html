@@ -9,14 +9,18 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
+        integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
     <link href="css//style.css" rel="stylesheet">
 
-    <title>Lesson 3</title>
+    <title>Project</title>
 </head>
 
 <body>
-    <div class="my-banner">My Awesome Online Store</div>
+    <div class="my-banner">My Awesome Online Store
+        <button id="edit-password"
+            class="btn btn-lg btn-outline-primary float-end fas fa-cog gear-icon modal-post-auth"></button>
+    </div>
 
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
@@ -32,19 +36,23 @@
                             data-bs-target="#modal-signin">Sign In/Up</button>
                     </li>
                     <li class="nav-item">
-                        <button id="menu-home" class="btn btn-outline-primary">Home</button>
+                        <button id="menu-home" class="btn btn-outline-primary modal-post-auth">Home</button>
                     </li>
                     <li class="nav-item">
-                        <button id="menu-purchases" class="btn btn-outline-primary  modal-post-auth">Purchases</button>
+                        <button id="menu-users" class="btn btn-outline-primary modal-post-auth admin">Users</button>
                     </li>
                     <li class="nav-item">
-                        <button id="menu-signout" class="btn btn-outline-danger  modal-post-auth">Sign Out</button>
+                        <button id="menu-purchases"
+                            class="btn btn-outline-primary modal-post-auth user">Purchases</button>
+                    </li>
+                    <li class="nav-item">
+                        <button id="menu-signout" class="btn btn-outline-danger modal-post-auth">Sign Out</button>
                     </li>
                 </ul>
-                <button id="menu-cart" class="btn btn-outline-success modal-post-auth">
+                <button id="menu-cart" class="btn btn-outline-success modal-post-auth user">
                     <img src="images/cart.png" width="30px"> (<span id="shoppingcart-count">0</span>)
                 </button>
-                <button id="menu-profile" class="btn btn-outline-success modal-post-auth">Profile</button>
+                <button id="menu-profile" class="btn btn-outline-success modal-post-auth user">Profile</button>
             </div>
         </div>
     </nav>
@@ -129,11 +137,46 @@
                             <input type="password" name="password" placeholder="password" required minlength="6">
                         </div>
                         <div>
-                            <input type="password" name="passwordConfirm" placeholder="passwordConfirm" required minlength="6">
+                            <input type="password" name="passwordConfirm" placeholder="passwordConfirm" required
+                                minlength="6">
                             <p id="form-signup-password-error" style="color: red;"></p>
                         </div>
                         <div>
                             <button class="btn btn-outline-primary" type="submit">Create</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Edit Account -->
+    <div class="modal fade" id="modal-edit-password" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="modal-edit-password-label" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-edit-password-label">Account Settings</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-edit-password">
+                        <div>
+                            <input type="email" id="edit-email-field" class="edit-account-field" name="email" disabled>
+                        </div>
+                        <div>
+                            <input type="password" id="edit-password-field" class="edit-account-field" name="password"
+                                placeholder="password" disabled>
+                            <button id="btn-edit-password" class="btn-sm btn-outline-danger">Edit Password</button>
+                            <p id="edit-error-password" class="account-error"></p>
+                        </div>
+                        <div>
+                            <input type="password" id="edit-confirmpassword-field" class="edit-account-field"
+                                name="passwordConfirm" placeholder="Confirm Password" disabled>
+                            <p id="edit-error-passwordConfirm" class="account-error"></p>
+                        </div>
+                        <div>
+                            <button type="submit" class="btn btn-outline-primary">Update</button>
                         </div>
                     </form>
                 </div>
@@ -148,6 +191,7 @@
     <!-- include only the Firebase features as you need -->
     <script defer src="/__/firebase/8.6.8/firebase-auth.js"></script>
     <script defer src="/__/firebase/8.6.8/firebase-firestore.js"></script>
+    <script defer src="/__/firebase/8.6.7/firebase-functions.js"></script>
     <script defer src="/__/firebase/8.6.8/firebase-storage.js"></script>
 
     <!-- 

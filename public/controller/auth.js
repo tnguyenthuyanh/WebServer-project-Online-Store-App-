@@ -37,7 +37,12 @@ export function addEventListeners() {
     firebase.auth().onAuthStateChanged(async user => {
         if (user) {
             currentUser = user;
-            
+
+            // credential = firebase().auth.EmailAuthProvider.credential(
+            //     user.email, 
+            //     userProvidedPassword
+            // );
+
             await Profile.getAccountInfo(user);
 
             Home.initShoppingCart();
@@ -51,6 +56,25 @@ export function addEventListeners() {
                 elements[i].style.display = 'block';
             }
 
+            if (Constant.adminEmails.includes(user.email)) {
+                elements = document.getElementsByClassName('admin');
+                for (let i = 0; i < elements.length; i++) {
+                    elements[i].style.display = 'block';
+                }
+                elements = document.getElementsByClassName('user');
+                for (let i = 0; i < elements.length; i++) {
+                    elements[i].style.display = 'none';
+                }
+            } else {
+                elements = document.getElementsByClassName('admin');
+                for (let i = 0; i < elements.length; i++) {
+                    elements[i].style.display = 'none';
+                }
+                elements = document.getElementsByClassName('user');
+                for (let i = 0; i < elements.length; i++) {
+                    elements[i].style.display = 'block';
+                }
+            }
             Route.routing(window.location.pathname, window.location.hash);
 
         } else {
@@ -96,5 +120,55 @@ export function addEventListeners() {
             if (Constant.DEV) console.log(e);
             Util.info('Failed to create new account', JSON.stringify(e), Element.modalSignup);
         }
-    })
+    });
+
+    Element.editPassword.addEventListener('click', () => {
+        Element.formEditPassword.reset();
+        Element.formEditPassword.email.value = currentUser.email;
+        document.getElementById('edit-password-field').disabled = true;
+        document.getElementById('edit-confirmpassword-field').disabled = true;
+        document.getElementById('btn-edit-password').disabled = false;
+        Element.formEditPasswordError.password.innerHTML = '';
+        Element.formEditPasswordError.passwordConfirm.innerHTML = '';
+        Element.modalEditPassword.show();
+    });
+
+    document.getElementById('btn-edit-password').addEventListener('click', e => {
+        e.preventDefault();
+        document.getElementById('edit-password-field').disabled = false;
+        document.getElementById('edit-confirmpassword-field').disabled = false;
+        e.target.disabled = true;
+    });
+
+    Element.formEditPassword.addEventListener('submit', async e => {
+        e.preventDefault();
+        const password = e.target.password.value;
+        const passwordConfirm = e.target.passwordConfirm.value;
+
+        // reset error messages
+        Element.formEditPasswordError.password.innerHTML = '';
+        Element.formEditPasswordError.passwordConfirm.innerHTML = '';
+
+        let valid = true;
+        // email: HTML validation, xxx.@uco.edu
+        if (password.length < 6) {
+            valid = false;
+            Element.formEditPasswordError.password.innerHTML = 'at least 6 chars';
+        }
+        if (passwordConfirm != password) {
+            valid = false;
+            Element.formEditPasswordError.passwordConfirm.innerHTML = 'passwords do not match';
+        }
+
+        if (!valid) return;
+
+        try {
+            await FirebaseController.updateAccount(password);
+            Util.info('Info', 'Password updated', Element.modalEditPassword);
+        } catch (e) {
+            if (Constant.DEV) console.log(e);
+            Util.info('Failed to Update Password', JSON.stringify(e), Element.modalEditPassword);
+        }
+        e.target.reset();
+    });
 }

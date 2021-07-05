@@ -1,17 +1,17 @@
-export const DEV = true;
+exports.DEV = true;
 
-export const adminEmails = [
+exports.adminEmails = [
     'admin@test.com',
     'super@test.com',
 ]
 
-export const collectionNames = {
+exports.collectionNames = {
     PRODUCTS: 'products',
     PURCHASE_HISTORY: 'purchase_history',
     ACCOUNT_INFO: 'account_info'
 }
 
-export const storageFolderNames = {
+exports.storageFolderNames = {
     PROFILE_PHOTOS: 'profile_photos/',
     PRODUCT_IMAGES: 'product_images/'
 }
