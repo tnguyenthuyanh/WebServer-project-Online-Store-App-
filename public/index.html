@@ -42,6 +42,9 @@
                         <button id="menu-users" class="btn btn-outline-primary modal-post-auth admin">Users</button>
                     </li>
                     <li class="nav-item">
+                        <button id="menu-products" class="btn btn-outline-primary modal-post-auth admin">Products</button>
+                    </li>
+                    <li class="nav-item">
                         <button id="menu-purchases"
                             class="btn btn-outline-primary modal-post-auth user">Purchases</button>
                     </li>
@@ -114,6 +117,95 @@
                 <div class="modal-body" id="modal-transaction-body"></div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Add new product -->
+    <div class="modal fade" id="modal-add-product" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="modal-add-product-label" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-add-product-label">Add New Product</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-add-product">
+                        <div>
+                            <input type="text" name="name" placeholder="product name">
+                            <p id="form-add-product-error-name" class="my-error"></p>
+                        </div>
+                        <div>
+                            <input type="text" name="price" placeholder="price ($)">
+                            <p id="form-add-product-error-price" class="my-error"></p>
+                        </div>
+                        <div>
+                            Summary<br />
+                            <textarea name="summary"></textarea>
+                            <p id="form-add-product-error-summary" class="my-error"></p>
+                        </div>
+                        <div>
+                            <img id="form-add-product-image-tag" style="display: block;" />
+                            <input id="form-add-product-image-button" type="file" value="upload" />
+                            <p id="form-add-product-error-image" class="my-error"></p>
+                            <div class="form-check float-end" style="margin-right: 15px; margin-top: 7px;">
+                                <input class="form-check-input" type="checkbox" value="0" id="add-hideCheckBox">
+                                <label class="form-check-label" for="add-hideCheckBox">
+                                    <p class="fs-5">Hide</p>
+                                </label>
+                            </div>
+                        </div>
+                        <div>
+                            <button type="submit" class="btn btn-outline-primary">Add</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Edit Product -->
+    <div class="modal fade" id="modal-edit-product" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="modal-edit-product-title" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-edit-product-title">Edit Product</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-edit-product" method="post">
+                        <input type="hidden" name="docId" />
+                        <input type="hidden" name="imageName" />
+                        <div>
+                            Name: <input type="text" name="name" />
+                            <p id="form-edit-product-error-name" class="my-error"></p>
+                        </div>
+                        <div>
+                            Price: <input type="text" name="price" />
+                            <p id="form-edit-product-error-price" class="my-error"></p>
+                        </div>
+                        <div>
+                            Summary:<br><textarea name="summary"></textarea>
+                            <p id="form-edit-product-error-summary" class="my-error"></p>
+                        </div>
+                        <div>
+                            <img id="form-edit-product-image-tag" style="display: block;">
+                            <p id="form-edit-product-error-image" class="my-error"></p>
+                            <input type="file" id="form-edit-product-image-button" value="upload" />
+                            <div class="form-check float-end" style="margin-right: 15px; margin-top: 7px;">
+                                <input class="form-check-input" type="checkbox" value="0" id="edit-hideCheckBox">
+                                <label class="form-check-label" for="edit-hideCheckBox">
+                                    <p class="fs-5">Hide</p>
+                                </label>
+                            </div>
+                        </div>
+                        <div>
+                            <button type="submit" class="btn btn-outline-primary">Update</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>

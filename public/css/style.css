@@ -37,3 +37,8 @@ input.edit-account-field {
     border-width: 0 0 2px 0;
     width: 75%; 
 }
+
+textarea {
+    width: 100%;
+    min-height: 150px;
+}

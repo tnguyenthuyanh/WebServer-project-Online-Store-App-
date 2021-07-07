@@ -34,11 +34,24 @@ export async function updateAccount(password) {
 export async function getProductList() {
     const products = [];
     const snapShot = await firebase.firestore().collection(Constant.collectionNames.PRODUCTS)
+            .where("hiden", "!=" , "yes")
             .orderBy('name')
             .get();
     snapShot.forEach(doc => {
         const p = new Product(doc.data());
         p.docId = doc.id;
+        products.push(p);
+    });
+    return products;
+}
+
+const cf_getProductListByAdmin = firebase.functions().httpsCallable('cf_getProductListByAdmin')
+export async function getProductListByAdmin() {
+    const products = [];
+    const result = await cf_getProductListByAdmin(); 
+    result.data.forEach(data => {
+        const p = new Product(data);
+        p.docId = data.docId;
         products.push(p);
     });
     return products;
@@ -143,3 +156,13 @@ export async function deleteUser(uid) {
     await cf_deleteUser(uid);
 }
 
+export async function uploadImage(imageFile, imageName) {
+    if (!imageName) 
+        imageName = Date.now() + imageFile.name; // with default name when stored in computer
+
+    const ref = firebase.storage().ref()
+                .child(Constant.storageFolderNames.PRODUCT_IMAGES + imageName);
+    const taskSnapShot = await ref.put(imageFile);
+    const imageURL = await taskSnapShot.ref.getDownloadURL();
+    return {imageName, imageURL};
+}

@@ -11,7 +11,7 @@ admin.initializeApp({
 const Constant = require('./constant.js')
 
 exports.cf_addProduct = functions.https.onCall(addProduct);
-exports.cf_getProductList = functions.https.onCall(getProductList);
+exports.cf_getProductListByAdmin = functions.https.onCall(getProductListByAdmin);
 exports.cf_getProductById = functions.https.onCall(getProductById);
 exports.cf_updateProduct = functions.https.onCall(updateProduct);
 exports.cf_deleteProduct = functions.https.onCall(deleteProduct);
@@ -86,7 +86,7 @@ async function deleteProduct(docId, context) {
     }
 
     try {
-        await admin.firestore().collection(Constant.collectionNames.PRODUCT)
+        await admin.firestore().collection(Constant.collectionNames.PRODUCTS)
                     .doc(docId).delete();
     } catch (e) {
         if (Constant.DEV) console.log(e);
@@ -103,7 +103,7 @@ async function updateProduct(productInfo, context) {
     }
 
     try {
-        await admin.firestore().collection(Constant.collectionNames.PRODUCT)
+        await admin.firestore().collection(Constant.collectionNames.PRODUCTS)
                     .doc(productInfo.docId).update(productInfo.data);
     } catch (e) {
         if (Constant.DEV) console.log(e);
@@ -118,7 +118,7 @@ async function getProductById(data, context) {
         throw new functions.https.HttpsError('unauthenticated', 'Only admin may invoke this function');
     }
     try {
-        const doc = await admin.firestore().collection(Constant.collectionNames.PRODUCT)
+        const doc = await admin.firestore().collection(Constant.collectionNames.PRODUCTS)
                     .doc(data).get();
         if (doc.exists) {
             const {name, summary, price, imageName, imageURL} = doc.data();
@@ -134,7 +134,7 @@ async function getProductById(data, context) {
     }
 }
 
-async function getProductList(data, context) {
+async function getProductListByAdmin(data, context) {
     if (!isAdmin(context.auth.token.email)) {
         if (Constant.DEV) console.log('not admin', context.auth.token.email);
         throw new functions.https.HttpsError('unauthenticated', 'Only admin may invoke this function');
@@ -142,7 +142,7 @@ async function getProductList(data, context) {
 
     try {
         let products = [];
-        const snapShot = await admin.firestore().collection(Constant.collectionNames.PRODUCT)
+        const snapShot = await admin.firestore().collection(Constant.collectionNames.PRODUCTS)
                             .orderBy('name')
                             .get();
         snapShot.forEach(doc => {
@@ -166,7 +166,7 @@ async function addProduct(data, context) {
     }
     // data: serialized product object
     try {
-        await admin.firestore().collection(Constant.collectionNames.PRODUCT)
+        await admin.firestore().collection(Constant.collectionNames.PRODUCTS)
                     .add(data);
     } catch (e) {
         if (Constant.DEV) console.log(e);
