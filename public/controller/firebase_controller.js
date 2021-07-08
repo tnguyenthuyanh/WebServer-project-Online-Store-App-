@@ -34,8 +34,8 @@ export async function updateAccount(password) {
 export async function getProductList() {
     const products = [];
     const snapShot = await firebase.firestore().collection(Constant.collectionNames.PRODUCTS)
-            .where("hiden", "!=" , "yes")
-            .orderBy('name')
+            .where('hide', '!=' , '1')
+            .orderBy('hide')
             .get();
     snapShot.forEach(doc => {
         const p = new Product(doc.data());

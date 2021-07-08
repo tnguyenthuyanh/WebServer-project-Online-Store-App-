@@ -20,15 +20,15 @@ export function addEventListeners() {
     });
 
     Element.formAddProduct.hideCheckBox.addEventListener('click', e => {
-        if (e.target.value == "0")
+        if (e.target.checked == true)
             e.target.value = "1";
         else 
-            e.target.value = "0"
+            e.target.value = "0";
         console.log(e.target.value);
     });
 
     Element.formEditProduct.hideCheckBox.addEventListener('click', e => {
-        if (e.target.value == "0")
+        if (e.target.checked == true)
             e.target.value = "1";
         else 
             e.target.value = "0"
@@ -118,7 +118,7 @@ async function addNewProduct(form) {
     const name = form.name.value;
     const price = form.price.value;
     const summary = form.summary.value;
-    const hide = Element.formEditProduct.hideCheckBox.value;
+    const hide = Element.formAddProduct.hideCheckBox.value;
 
     const product = new Product({
         name, price, summary, hide
@@ -141,7 +141,7 @@ async function addNewProduct(form) {
         const {imageName, imageURL} = await FirebaseController.uploadImage(imageFile2Upload);
         product.imageName = imageName;
         product.imageURL = imageURL;
-        await FirebaseController.addProduct(product.serialize());
+        await FirebaseController.addProduct(product.serializeForAdd());
         Util.info('Success!', `${product.name} added!`, Element.modalAddProduct);
     } catch (e) {
         if (Constant.DEV) console.log(e);

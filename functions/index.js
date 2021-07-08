@@ -121,8 +121,8 @@ async function getProductById(data, context) {
         const doc = await admin.firestore().collection(Constant.collectionNames.PRODUCTS)
                     .doc(data).get();
         if (doc.exists) {
-            const {name, summary, price, imageName, imageURL} = doc.data();
-            const p = {name, summary, price, imageName, imageURL};
+            const {name, summary, price, hide, imageName, imageURL} = doc.data();
+            const p = {name, summary, price, hide, imageName, imageURL};
             p.docId = doc.id;
             return p;
         } else {
@@ -146,8 +146,8 @@ async function getProductListByAdmin(data, context) {
                             .orderBy('name')
                             .get();
         snapShot.forEach(doc => {
-            const {name, price, summary, imageName, imageURL} =  doc.data();
-            const p = {name, price, summary, imageName, imageURL};
+            const {name, price, summary, hide, imageName, imageURL} =  doc.data();
+            const p = {name, price, summary, hide, imageName, imageURL};
             p.docId = doc.id;
             products.push(p);
         });

@@ -21,6 +21,17 @@ export class Product {
         };
     }
 
+    serializeForAdd() {
+        return {
+            name: this.name,
+            price: this.price,
+            summary: this.summary,
+            hide: this.hide,
+            imageName: this.imageName,
+            imageURL: this.imageURL,
+        };
+    }
+
     static isSerializedProduct(p) {
         if (!p.name) return false;
         if (!p.price || typeof p.price != 'number') return false;
@@ -39,6 +50,7 @@ export class Product {
         if (this.summary) p.summary = this.summary;
         if (this.imageName) p.imageName = this.imageName;
         if (this.imageURL) p.imageURL = this.imageURL;
+        if (this.hide) p.hide = this.hide;
         return p;
     }
 

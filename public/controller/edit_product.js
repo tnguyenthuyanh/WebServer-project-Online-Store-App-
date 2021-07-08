@@ -8,6 +8,7 @@ let imageFile2Upload;
 
 export function addEventListeners() {
     Element.formEditProduct.imageButton.addEventListener('change', e => {
+        console.log('1st')
         imageFile2Upload = e.target.files[0];
         if (!imageFile2Upload) {
             Element.formEditProduct.imageTag.src = null;
@@ -15,6 +16,8 @@ export function addEventListeners() {
             return;
         }
         Element.formEditProduct.errorImage.innerHTML = '';
+        
+        
         const reader = new FileReader();
         reader.readAsDataURL(imageFile2Upload);
         reader.onload = () => Element.formEditProduct.imageTag.src = reader.result;
@@ -28,6 +31,7 @@ export function addEventListeners() {
             name: e.target.name.value,
             price: e.target.price.value,
             summary: e.target.summary.value,
+            hide: Element.formEditProduct.hideCheckBox.value,
         });
         p.docId = e.target.docId.value;
         const errors = p.validate(true); //bypass image file check
@@ -88,6 +92,11 @@ export async function edit_product(docId) {
     Element.formEditProduct.form.name.value = product.name;
     Element.formEditProduct.form.price.value = product.price;
     Element.formEditProduct.form.summary.value = product.summary;
+    Element.formEditProduct.hideCheckBox.value = product.hide;
+    if (product.hide == '1') 
+        Element.formEditProduct.hideCheckBox.checked = true;
+    else
+        Element.formEditProduct.hideCheckBox.checked = false;
     Element.formEditProduct.imageTag.src = product.imageURL;
     Element.formEditProduct.errorImage.innerHTML = '';
     imageFile2Upload = null;

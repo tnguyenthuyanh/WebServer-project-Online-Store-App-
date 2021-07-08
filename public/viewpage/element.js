@@ -12,6 +12,7 @@ export const menuProfile = document.getElementById('menu-profile');
 export const shoppingCartCount = document.getElementById('shoppingcart-count');
 export const menuUsers = document.getElementById('menu-users');
 export const editPassword = document.getElementById('edit-password');
+export const menuViewAsCustomer = document.getElementById('menu-view-as-customer');
 
 // forms 
 export const formSignin = document.getElementById('form-signin');

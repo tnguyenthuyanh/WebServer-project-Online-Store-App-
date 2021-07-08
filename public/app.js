@@ -6,6 +6,8 @@ import * as Profile from './viewpage/profile_page.js'
 import * as Route from './controller/route.js'
 import * as User from './viewpage/user_page.js'
 import * as Product from './viewpage/product_page.js'
+import * as Edit from './controller/edit_product.js'
+import * as ViewAsCustomer from './viewpage/viewAsUser_page.js'
 
 Auth.addEventListeners();
 Home.addEventListeners();
@@ -14,6 +16,8 @@ Cart.addEventListeners();
 Profile.addEventListeners();
 User.addEventListeners();
 Product.addEventListeners();
+Edit.addEventListeners();
+ViewAsCustomer.addEventListeners();
 
 window.onload = () => {
     const pathname = window.location.pathname;
