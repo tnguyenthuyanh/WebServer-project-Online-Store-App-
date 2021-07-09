@@ -18,6 +18,7 @@ exports.cf_deleteProduct = functions.https.onCall(deleteProduct);
 exports.cf_getUserList = functions.https.onCall(getUserList);
 exports.cf_updateUser = functions.https.onCall(updateUser);
 exports.cf_deleteUser = functions.https.onCall(deleteUser);
+exports.cf_deletePurchaseHistory = functions.https.onCall(deletePurchaseHistory);
 
 function isAdmin(email) {
     return Constant.adminEmails.includes(email);
@@ -171,5 +172,21 @@ async function addProduct(data, context) {
     } catch (e) {
         if (Constant.DEV) console.log(e);
         throw new functions.https.HttpsError('internal', 'addProduct failed');
+    }
+}
+
+async function deletePurchaseHistory(data, context) {
+    // data => docId
+    if (!isAdmin(context.auth.token.email)) {
+        if (Constant.DEV) console.log('not admin', context.auth.token.email);
+        throw new functions.https.HttpsError('unauthenticated', 'Only admin may invoke this function');
+    }
+
+    try {
+        await admin.firestore().collection(Constant.collectionNames.PURCHASE_HISTORY)
+                    .doc(data).delete();
+    } catch (e) {
+        if (Constant.DEV) console.log(e);
+        throw new functions.https.HttpsError('internal', 'deletePurchaseHistory failed');
     }
 }

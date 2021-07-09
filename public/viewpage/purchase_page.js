@@ -12,6 +12,8 @@ export function addEventListeners() {
         await purchase_page();
         Util.enableButton(Element.menuPurchases, label);
     });
+
+
 }
 
 export async function purchase_page() {
@@ -21,7 +23,7 @@ export async function purchase_page() {
     }
 
     let html = '<h1>Purchases Page</h1>';
-    let carts; 
+    let carts;
     try {
         carts = await FirebaseController.getPurchaseHistory(Auth.currentUser.uid);
         if (carts.length == 0) {
@@ -49,7 +51,7 @@ export async function purchase_page() {
 
     for (let i = 0; i < carts.length; i++) {
         html += `
-        <tr>
+        <tr id="purchase-row-${i}">
             <td>
                 <form class="form-purchase-history" method="post">
                     <input type="hidden" name="index" value="${i}">
@@ -58,14 +60,45 @@ export async function purchase_page() {
             </td>
             <td>${carts[i].getTotalQty()}</td>
             <td>${Util.currency(carts[i].getTotalPrice())}</td>
-            <td>${Date(carts[i].timestamp).toString()}</td>
-        </tr>
-        `;
+            <td>${Date(carts[i].timestamp).toString()}
+            `
+        if (Constant.adminEmails.includes(Auth.currentUser.email)) {
+            html += `
+                <form class="delete-purchase-history" method="post">
+                    <input type="hidden" name="docId" value="${carts[i].docId}">
+                    <button class="btn btn-outline-danger float-end">Delete</button>
+                </form>
+            `;
+        }
+
+        html += `</td></tr>`;
+
     }
 
     html += '</tbody></table>';
 
     Element.root.innerHTML = html;
+
+    const deleteForms = document.getElementsByClassName('delete-purchase-history');
+    for (let i = 0; i < deleteForms.length; i++) {
+        deleteForms[i].addEventListener('submit', async e => {
+            e.preventDefault();
+            const button = e.target.getElementsByTagName('button')[0];
+            Util.disableButton(button);
+            const docId = e.target.docId.value;
+            try {
+                await FirebaseController.deletePurchaseHistory(docId);
+                document.getElementById(`purchase-row-${i}`).remove();
+                //Util.info('Deleted!', `User deleted: uid=${uid}`);
+            } catch (e) {
+                if (Constant.DEV) console.log(e);
+                Util.info('Delete purchase history in Error', JSON.stringify(e));
+            }
+            if (deleteForms.length == 0) {
+                await purchase_page();
+            }
+        });
+    }
 
     const historyForms = document.getElementsByClassName('form-purchase-history');
     for (let i = 0; i < historyForms.length; i++) {

@@ -12,23 +12,8 @@ export async function signOut() {
     await firebase.auth().signOut();
 }
 
-export function verify(email, password) {
-    const credential = firebase.auth.EmailAuthProvider.credential(
-        email, // references the user's email address
-        password
-    );
-    return credential;
-}
-
-export async function updateAccount(password) {
-    // let credential = firebase.auth.EmailAuthProvider.credential(
-    //     firebase.auth().currentUser.email, // references the user's email address
-    //     firebase.auth().currentUser.password
-    // );
-    
-    //firebase.auth().currentUser.reauthenticateWithCredential(Auth.credential);
-    await firebase.auth().currentUser.updatePassword(password);
-    //Auth.currentUser.password = password;
+export async function updateAccount(newPassword) {
+    await firebase.auth().currentUser.updatePassword(newPassword)
 }
 
 export async function getProductList() {
@@ -71,6 +56,7 @@ export async function getPurchaseHistory(uid) {
     const carts = [];
     snapShot.forEach(doc => {
         const sc = ShoppingCart.deserialize(doc.data());
+        sc.docId = doc.id;
         carts.push(sc);
     });
     return carts;
@@ -165,4 +151,11 @@ export async function uploadImage(imageFile, imageName) {
     const taskSnapShot = await ref.put(imageFile);
     const imageURL = await taskSnapShot.ref.getDownloadURL();
     return {imageName, imageURL};
+}
+
+
+const cf_deletePurchaseHistory = firebase.functions().httpsCallable('cf_deletePurchaseHistory');
+export async function deletePurchaseHistory(docId) {
+    console.log(docId);
+    await cf_deletePurchaseHistory(docId);
 }

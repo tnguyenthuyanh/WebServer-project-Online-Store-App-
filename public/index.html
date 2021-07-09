@@ -18,7 +18,7 @@
 
 <body>
     <div class="my-banner">My Awesome Online Store
-        <button id="edit-password"
+        <button id="edit-password" 
             class="btn btn-lg btn-outline-primary float-end fas fa-cog gear-icon modal-post-auth"></button>
     </div>
 
@@ -245,7 +245,7 @@
         </div>
     </div>
 
-    <!-- Modal: Edit Account -->
+    <!-- Modal: Edit Password -->
     <div class="modal fade" id="modal-edit-password" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="modal-edit-password-label" aria-hidden="true">
         <div class="modal-dialog">
@@ -263,16 +263,17 @@
                             <input type="password" id="edit-password-field" class="edit-account-field" name="password"
                                 placeholder="password" disabled>
                             <button id="btn-edit-password" class="btn-sm btn-outline-danger">Edit Password</button>
-                            <p id="edit-error-password" class="account-error"></p>
+                            <p id="edit-error-password" class="my-error"></p>
                         </div>
                         <div>
                             <input type="password" id="edit-confirmpassword-field" class="edit-account-field"
                                 name="passwordConfirm" placeholder="Confirm Password" disabled>
-                            <p id="edit-error-passwordConfirm" class="account-error"></p>
+                            <p id="edit-error-passwordConfirm" class="my-error"></p>
                         </div>
                         <div>
                             <button type="submit" class="btn btn-outline-primary">Update</button>
                         </div>
+                        <input type="hidden" name="pw"/>
                     </form>
                 </div>
             </div>

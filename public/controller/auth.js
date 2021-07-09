@@ -15,6 +15,7 @@ export function addEventListeners() {
         const password = e.target.password.value;
         const button = e.target.getElementsByTagName('button')[0];
         const label = Util.disableButton(button);
+
         try {
             await FirebaseController.signIn(email, password);
             Element.modalSignin.hide();
@@ -38,11 +39,6 @@ export function addEventListeners() {
         if (user) {
             currentUser = user;
 
-            // credential = firebase().auth.EmailAuthProvider.credential(
-            //     user.email, 
-            //     userProvidedPassword
-            // );
-
             await Profile.getAccountInfo(user);
 
             Home.initShoppingCart();
@@ -65,6 +61,8 @@ export function addEventListeners() {
                 for (let i = 0; i < elements.length; i++) {
                     elements[i].style.display = 'none';
                 }
+
+                history.pushState(null, null, Route.routePathnames.PRODUCTS);
             } else {
                 elements = document.getElementsByClassName('admin');
                 for (let i = 0; i < elements.length; i++) {
@@ -74,9 +72,12 @@ export function addEventListeners() {
                 for (let i = 0; i < elements.length; i++) {
                     elements[i].style.display = 'block';
                 }
+
+                history.pushState(null, null, Route.routePathnames.HOME);
+
             }
-            history.pushState(null, null, Route.routePathnames.PRODUCTS);
             Route.routing(window.location.pathname, window.location.hash);
+            
 
         } else {
             currentUser = null;
@@ -91,6 +92,7 @@ export function addEventListeners() {
 
             history.pushState(null, null, Route.routePathnames.HOME);
             Route.routing(window.location.pathname, window.location.hash);
+
         }
     });
 
