@@ -11,6 +11,7 @@ export function addEventListeners() {
         history.pushState(null, null, Route.routePathnames.CART);
         await cart_page();
     });
+
 }
 
 export async function cart_page() {

@@ -26,8 +26,14 @@ export async function home_page() {
         if (cart) {
             cart.items.forEach(item => {
                 const product = products.find(p => item.docId == p.docId)
-                product.qty = item.qty;
+                if (!product) {
+                    cart.removeWholeItem(item);
+                } 
+                else {
+                    product.qty = item.qty;
+                }
             });
+            Element.shoppingCartCount.innerHTML = cart.getTotalQty();
         }
     } catch (e) {
         if (Constant.DEV) console.log(e);

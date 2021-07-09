@@ -4,6 +4,8 @@ import * as Cart from '../viewpage/cart.js'
 import * as Profile from '../viewpage/profile_page.js'
 import * as User from '../viewpage/user_page.js'
 import * as Product from '../viewpage/product_page.js'
+import * as Constant from '../model/constant.js'
+import * as Auth from '../controller/auth.js'
 
 export const routePathnames = {
     HOME: '/',
@@ -26,5 +28,8 @@ export const routes = [
 export function routing(pathname, hash) {
     const route = routes.find(r => r.pathname == pathname);
     if (route) route.page();
-    else routes[0].page();
+    else if (Constant.adminEmails.includes(Auth.currentUser.email)) 
+        routes[5].page();
+    else 
+        routes[0].page();
 }

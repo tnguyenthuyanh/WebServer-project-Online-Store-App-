@@ -75,6 +75,7 @@ export function addEventListeners() {
                     elements[i].style.display = 'block';
                 }
             }
+            history.pushState(null, null, Route.routePathnames.PRODUCTS);
             Route.routing(window.location.pathname, window.location.hash);
 
         } else {

@@ -50,6 +50,20 @@ export class ShoppingCart {
         this.saveToLocalStorage();
     }
 
+    removeWholeItem(product) {
+        const index = this.items.findIndex(e => product.docId == e.docId);
+        if (index < 0) return;
+
+        while (true) {
+            --product.qty;
+            if (product.qty == 0)
+                break;
+        }
+        
+        this.items.splice(index, 1);
+        this.saveToLocalStorage();
+    }
+
     saveToLocalStorage() {
         window.localStorage.setItem(`cart-${this.uid}`, this.stringify());
     }
