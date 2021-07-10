@@ -1,4 +1,4 @@
-import { Product } from '../model/product.js';
+import { Product } from '../model/Product.js';
 import * as Element from './element.js'
 import * as FirebaseController from '../controller/firebase_controller.js'
 import * as Constant from '../model/constant.js'
