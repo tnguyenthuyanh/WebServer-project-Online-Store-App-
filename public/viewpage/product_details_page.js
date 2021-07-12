@@ -68,10 +68,18 @@ export async function product_details_page(productId) {
     <hr>
     `;
 
+    // add new review
     html += `
-        <div id="message-review-body">
         <h5> Customer reviews </h5>
-    `;
+        <div id="add-new-review" style="padding-top: 10px;"> 
+            <textarea id="textarea-add-new-review" placeholder="Add a review"></textarea>
+            <br>
+            <button id="button-add-new-review" class="btn btn-outline-info">Add a Review</button>
+        </div>
+
+        <div id="message-review-body">
+        `;
+
     // display all reviews
     if (reviews && reviews.length > 0) {
         reviews.forEach(r => {
@@ -82,14 +90,7 @@ export async function product_details_page(productId) {
     //     html += "There are no customer reviews yet.";
     html += '</div>';
 
-    // add new review
-    html += `
-        <div style="padding-top: 10px;"> 
-            <textarea id="textarea-add-new-review" placeholder="Add a review"></textarea>
-            <br>
-            <button id="button-add-new-review" class="btn btn-outline-info">Add a Review</button>
-        </div>
-    `;
+
 
     Element.root.innerHTML = html;
 
@@ -116,39 +117,65 @@ export async function product_details_page(productId) {
 
         const reviewTag = document.createElement('div');
         reviewTag.innerHTML = buildReviewView(review);
-        document.getElementById('message-review-body').appendChild(reviewTag);
+        document.getElementById('message-review-body').prepend(reviewTag);
         document.getElementById('textarea-add-new-review').value = '';
-
+        const editForm = document.getElementsByClassName('form-edit-review');
+        addEditReviewFormEvent(editForm[0]);
+        const updateForm = document.getElementsByClassName('form-update-review');
+        addUpdateReviewFormEvent(updateForm[0]);
+        const deleteForm = document.getElementsByClassName('form-delete-review');
+        addDeleteReviewFormEvent(deleteForm[0]);
         Util.enableButton(button, label);
     });
 
     const formEditReview = document.getElementsByClassName('form-edit-review');
     for (let i = 0; i < formEditReview.length; i++) {
-        formEditReview[i].addEventListener('submit', async e => {
-            e.preventDefault();
-            const docId = e.target.docId.value;
-            document.getElementById(`review-${docId}-content`).disabled = false;
-        });
+        addEditReviewFormEvent(formEditReview[i]);
+    }
+
+    const formUpdateReview = document.getElementsByClassName('form-update-review');
+    for (let i = 0; i < formUpdateReview.length; i++) {
+        addUpdateReviewFormEvent(formUpdateReview[i]);
     }
 
     const formDeleteReview = document.getElementsByClassName('form-delete-review');
     for (let i = 0; i < formDeleteReview.length; i++) {
-        formDeleteReview[i].addEventListener('submit', async e => {
-            e.preventDefault();
-            if (!window.confirm("Press OK to delete.")) return;
-            const button = e.target.getElementsByTagName('button')[0];
-            Util.disableButton(button);
-            const docId = e.target.docId.value;
-            try {        
-                await FirebaseController.deleteReview(docId);
-                document.getElementById(`${docId}-box`).remove();
-                //Util.info('Deleted!', 'Review deleted');
-            } catch (e) {
-                if (Constant.DEV) console.log(e);
-                Util.info('Delete review in Error', JSON.stringify(e));
-            }
-        });
+        addDeleteReviewFormEvent(formDeleteReview[i]);
     }
+}
+
+function addEditReviewFormEvent(form) {
+    form.addEventListener('submit', e => {
+        e.preventDefault();
+        const docId = e.target.docId.value;
+        document.getElementById(`review-${docId}-content`).disabled = false;
+    });
+}
+
+function addUpdateReviewFormEvent(form) {
+    form.addEventListener('submit', async e => {
+        e.preventDefault();
+        const docId = e.target.docId.value;
+
+    });
+}
+
+function addDeleteReviewFormEvent(form) {
+    form.addEventListener('submit', async e => {
+        e.preventDefault();
+        if (!window.confirm("Press OK to delete.")) return;
+        const button = e.target.getElementsByTagName('button')[0];
+        Util.disableButton(button);
+        const docId = e.target.docId.value;
+        try {
+            await FirebaseController.deleteReview(docId);
+            document.getElementById(`${docId}-box`).remove();
+            //Util.info('Deleted!', 'Review deleted');
+        } catch (e) {
+            if (Constant.DEV) console.log(e);
+            Util.info('Delete review in Error', JSON.stringify(e));
+        }
+    });
 }
 
 function buildReviewView(review) {
@@ -161,15 +188,20 @@ function buildReviewView(review) {
     `;
     if (review.uid == Auth.currentUser.uid)
         html += `
-            <form class="form-edit-review" method="post" style="display:inline-block; padding: 0 0 7px 7px">
+            <form class="form-edit-review" method="post" style="display: inline-block; padding: 0 0 7px 7px">
                 <input type="hidden" name="docId" value="${review.docId}">
                 <button class="btn btn-outline-primary" type="submit">Edit</button>
+            </form>
+            <form class="form-update-review" method="post" style="display: none;">
+                <input type="hidden" name="docId" value="${review.docId}">
+                <button class="btn btn-outline-success" type="submit">Update</button>
             </form>
             <form class="form-delete-review" method="post" style="display:inline-block;">
                 <input type="hidden" name="docId" value="${review.docId}">
                 <button class="btn btn-outline-danger" type="submit">Delete</button>
             </form> 
         `;
+
 
     html += '</div>';
     return html;

@@ -173,7 +173,7 @@ export async function getReviewList(productId) {
     const snapShot = await firebase.firestore()
             .collection(Constant.collectionNames.REVIEW)
             .where('productId', '==', productId)
-            .orderBy('timestamp')
+            .orderBy('timestamp', 'desc')
             .get();
     const reviews = [];
     snapShot.forEach(doc => {
