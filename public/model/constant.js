@@ -8,7 +8,8 @@ export const adminEmails = [
 export const collectionNames = {
     PRODUCTS: 'products',
     PURCHASE_HISTORY: 'purchase_history',
-    ACCOUNT_INFO: 'account_info'
+    ACCOUNT_INFO: 'account_info',
+    REVIEW: 'reviews',
 }
 
 export const storageFolderNames = {

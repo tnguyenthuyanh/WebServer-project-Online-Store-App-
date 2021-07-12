@@ -62,7 +62,7 @@ export function addEventListeners() {
                     elements[i].style.display = 'none';
                 }
 
-                history.pushState(null, null, Route.routePathnames.PRODUCTS);
+                //history.pushState(null, null, Route.routePathnames.PRODUCTS);
             } else {
                 elements = document.getElementsByClassName('admin');
                 for (let i = 0; i < elements.length; i++) {
@@ -73,7 +73,7 @@ export function addEventListeners() {
                     elements[i].style.display = 'block';
                 }
 
-                history.pushState(null, null, Route.routePathnames.HOME);
+                //history.pushState(null, null, Route.routePathnames.HOME);
 
             }
             Route.routing(window.location.pathname, window.location.hash);

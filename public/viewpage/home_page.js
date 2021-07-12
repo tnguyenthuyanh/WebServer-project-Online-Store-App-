@@ -5,6 +5,7 @@ import * as Constant from '../model/constant.js'
 import * as Util from './util.js'
 import * as Auth from '../controller/auth.js'
 import { ShoppingCart } from '../model/ShoppingCart.js'
+import * as ProductDetails from './product_details_page.js'
 
 export function addEventListeners() {
     Element.menuHome.addEventListener('click', async () => {
@@ -67,6 +68,8 @@ export async function home_page() {
             Element.shoppingCartCount.innerHTML = cart.getTotalQty();
         });
     }
+
+    ProductDetails.addViewButtonListeners();
 }
 
 function buildProductView(product, index) {
@@ -74,7 +77,10 @@ function buildProductView(product, index) {
     <div class="card" style="width: 18rem; display: inline-block;">
         <img src="${product.imageURL}" class="card-img-top">
         <div class="card-body">
-            <h5 class="card-title">${product.name}</h5>
+            <form method="post" class="d-inline form-view-detail">
+                <input type="hidden" name="productId" value="${product.docId}">
+                <button class="btn btn-lg card-title">${product.name}</button>
+            </form>
             <p class="card-text">
                 ${Util.currency(product.price)} <br>
                 ${product.summary}
