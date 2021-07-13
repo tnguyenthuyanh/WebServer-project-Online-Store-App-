@@ -16,4 +16,12 @@ export class Review {
             content: this.content,
         }
     }
+
+    validate() { 
+        let error;
+        if (!this.content || this.content.length < 6)
+            error = 'Review too short; min 6 chars';
+
+        return error;
+    }
 }

@@ -32,6 +32,7 @@ export async function product_details_page(productId) {
     //     Element.root.innerHTML = '<h1>Protected Page</h1>';
     //     return;
     // }
+
     if (!productId) {
         Util.info('Error', 'Product Id is null; invalid access');
         return;
@@ -88,7 +89,7 @@ export async function product_details_page(productId) {
         <div class="${Auth.currentUser && (bought || Constant.adminEmails.includes(Auth.currentUser.email))
             ? 'd-block' : 'd-none'}" style="padding-top: 10px;"> 
             <textarea id="textarea-add-new-review" placeholder="Add a review"></textarea>
-            <br>
+            <p id="form-add-review-error" class="my-error"></p>
             <button id="button-add-new-review" class="btn btn-outline-info">Add a Review</button>
         </div> 
     `;
@@ -119,9 +120,15 @@ export async function product_details_page(productId) {
             uid, email, timestamp, content, productId,
         });
 
+        const error = review.validate();
+        if (error) {
+            document.getElementById('form-add-review-error').innerHTML = error;
+            return;
+        }
+        document.getElementById('form-add-review-error').innerHTML = '';
+            
         const button = document.getElementById('button-add-new-review');
         const label = Util.disableButton(button);
-        // await Util.sleep(1000);
 
         try {
             const docId = await FirebaseController.addReview(review);
@@ -177,6 +184,7 @@ function addEditReviewFormEvent(form) {
             orgContentInput.disabled = true;
             updateForm.style.display = 'none';
             orgContentInput.value = orgContent;
+            document.getElementById(`update-review-${docId}-error`).innerHTML = '';
             button.innerHTML = 'Edit';
         }
     });
@@ -186,10 +194,16 @@ function addUpdateReviewFormEvent(form) {
     form.addEventListener('submit', async e => {
         e.preventDefault();
         const button = e.target.getElementsByTagName('button')[0];
-        const label = Util.disableButton(button);
         const docId = e.target.docId.value;
+        const errorTag = document.getElementById(`update-review-${docId}-error`);
         const content = document.getElementById(`review-${docId}-content`).value;
         const timestamp = Date.now();
+        if (!content || content.length < 6) {
+            errorTag.innerHTML = 'Review too short; min 6 chars';
+            return;
+        }
+        errorTag.innerHTML = '';
+        const label = Util.disableButton(button);
         try {
             await FirebaseController.updateReview(docId, { content, timestamp });
             document.getElementById(`edit-input-content-${docId}`).value = content;
@@ -229,10 +243,11 @@ function addDeleteReviewFormEvent(form) {
 function buildReviewView(review) {
     let html = `
     <div id="${review.docId}-box" class="border border-primary" style="margin-top: 15px;">
-        <div class="text-white" style="background-color: pink">
+        <div class="text-black" style="background-color: pink">
             Reviewed by ${review.email} <span id="time-${review.docId}">(At ${new Date(review.timestamp).toString()})</span>
         </div>
         <input id="review-${review.docId}-content" name="content" value="${review.content}" disabled>
+        <p id="update-review-${review.docId}-error" class="my-error"></p>
     `;
 
     if (Auth.currentUser && review.uid == Auth.currentUser.uid)
