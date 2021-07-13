@@ -196,3 +196,8 @@ export async function deleteReview(docId) {
     await firebase.firestore().collection(Constant.collectionNames.REVIEW)
                     .doc(docId).delete();
 }
+
+export async function updateReview(docId, data) {
+    await firebase.firestore().collection(Constant.collectionNames.REVIEW)
+                    .doc(docId).update(data);
+}

@@ -90,8 +90,6 @@ export async function product_details_page(productId) {
     //     html += "There are no customer reviews yet.";
     html += '</div>';
 
-
-
     Element.root.innerHTML = html;
 
     document.getElementById('button-add-new-review').addEventListener('click', async () => {
@@ -148,15 +146,47 @@ function addEditReviewFormEvent(form) {
     form.addEventListener('submit', e => {
         e.preventDefault();
         const docId = e.target.docId.value;
-        document.getElementById(`review-${docId}-content`).disabled = false;
+        const button = e.target.getElementsByTagName('button')[0];
+        const updateForm = document.getElementById(`update-${docId}`);
+        const orgContentInput = document.getElementById(`review-${docId}-content`);
+        const orgContent = e.target.content.value;
+        if (button.innerHTML == 'Edit') {
+            orgContentInput.disabled = false;
+            updateForm.style.display = 'inline-block';
+            button.innerHTML = 'Cancel';
+        }
+        else {
+            orgContentInput.disabled = true;
+            updateForm.style.display = 'none';
+            orgContentInput.value = orgContent;
+            button.innerHTML = 'Edit';
+        }
     });
 }
 
 function addUpdateReviewFormEvent(form) {
     form.addEventListener('submit', async e => {
         e.preventDefault();
+        const button = e.target.getElementsByTagName('button')[0];
+        const label = Util.disableButton(button);
         const docId = e.target.docId.value;
-
+        const content = document.getElementById(`review-${docId}-content`).value;
+        const timestamp = Date.now();
+        try {
+            await FirebaseController.updateReview(docId, { content, timestamp });
+            document.getElementById(`edit-input-content-${docId}`).value = content;
+            document.getElementById(`review-${docId}-content`).disabled = true;
+            document.getElementById(`time-${docId}`).innerHTML = `(At ${new Date(timestamp).toString()})`;
+            document.getElementById(`edit-button-${docId}`).innerHTML = 'Edit';
+            document.getElementById(`update-${docId}`).style.display = 'none';
+            const updatedReviewBox = document.getElementById(`${docId}-box`);
+            document.getElementById(`${docId}-box`).remove();
+            document.getElementById('message-review-body').prepend(updatedReviewBox);
+        } catch (e) {
+            if (Constant.DEV) console.log(e);
+            Util.info('Update review in Error', JSON.stringify(e));
+        }
+        Util.enableButton(button, label);
     });
 }
 
@@ -182,7 +212,7 @@ function buildReviewView(review) {
     let html = `
     <div id="${review.docId}-box" class="border border-primary" style="margin-top: 15px;">
         <div class="text-white" style="background-color: pink">
-            Reviewed by ${review.email} (At ${new Date(review.timestamp).toString()})
+            Reviewed by ${review.email} <span id="time-${review.docId}">(At ${new Date(review.timestamp).toString()})</span>
         </div>
         <input id="review-${review.docId}-content" name="content" value="${review.content}" disabled>
     `;
@@ -190,18 +220,18 @@ function buildReviewView(review) {
         html += `
             <form class="form-edit-review" method="post" style="display: inline-block; padding: 0 0 7px 7px">
                 <input type="hidden" name="docId" value="${review.docId}">
-                <button class="btn btn-outline-primary" type="submit">Edit</button>
+                <input id="edit-input-content-${review.docId}" type="hidden" name="content" value="${review.content}">
+                <button id="edit-button-${review.docId}" edit-review-button" class="btn btn-outline-primary" type="submit">Edit</button>
             </form>
-            <form class="form-update-review" method="post" style="display: none;">
+            <form id="update-${review.docId}" class="form-update-review" method="post" style="display: none; padding-left: 8px">
                 <input type="hidden" name="docId" value="${review.docId}">
                 <button class="btn btn-outline-success" type="submit">Update</button>
             </form>
-            <form class="form-delete-review" method="post" style="display:inline-block;">
+            <form class="form-delete-review" method="post" style="display:inline-block; padding-left: 8px">
                 <input type="hidden" name="docId" value="${review.docId}">
                 <button class="btn btn-outline-danger" type="submit">Delete</button>
             </form> 
         `;
-
 
     html += '</div>';
     return html;
