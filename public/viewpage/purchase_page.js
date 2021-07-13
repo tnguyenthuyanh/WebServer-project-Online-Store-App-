@@ -4,6 +4,7 @@ import * as FirebaseController from '../controller/firebase_controller.js'
 import * as Auth from '../controller/auth.js'
 import * as Constant from '../model/constant.js'
 import * as Util from './util.js'
+import * as ProductDetails from './product_details_page.js'
 
 export function addEventListeners() {
     Element.menuPurchases.addEventListener('click', async () => {
@@ -12,7 +13,6 @@ export function addEventListeners() {
         await purchase_page();
         Util.enableButton(Element.menuPurchases, label);
     });
-
 
 }
 
@@ -108,8 +108,21 @@ export async function purchase_page() {
             Element.modalTransactionTitle.innerHTML = `Purchased At: ${new Date(carts[index].timestamp).toString()}`;
             Element.modalTransactionBody.innerHTML = buidTransactionView(carts[index]);
             Element.modalTransactionView.show();
+
+            const reviewLink = document.getElementsByClassName('review-link');
+            for (let i = 0; i < reviewLink.length; i++) {
+                reviewLink[i].addEventListener('submit', async e => {
+                    e.preventDefault();
+                    Element.modalTransactionView.hide();
+                    const productId = e.target.docId.value;
+                    history.pushState(null, null, Route.routePathnames.ITEM + '#' + productId);
+                    await ProductDetails.product_details_page(productId);
+                });
+            }
         });
     }
+
+
 }
 
 function buidTransactionView(cart) {
@@ -123,6 +136,7 @@ function buidTransactionView(cart) {
         <th scope="col">Qty</th>
         <th scope="col">Sub-Total</th>
         <th scope="col" width="50%">Summary</th>
+        <th scope="col">Review</th>
       </tr>
     </thead>
     <tbody>
@@ -137,6 +151,12 @@ function buidTransactionView(cart) {
             <td>${item.qty}</td>
             <td>${Util.currency(item.qty * item.price)}</td>
             <td>${item.summary}</td>
+            <td>
+            <form class="review-link" method="post">
+                <input type="hidden" name="docId" value="${item.docId}">
+                <button class="btn btn-outline-primary">Review</button>
+            </form>
+            </td>
         </tr>
         `;
     });

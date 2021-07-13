@@ -68,15 +68,33 @@ export async function product_details_page(productId) {
     <hr>
     `;
 
+    let bought = false;
+
+    if (Auth.currentUser) {
+        const carts = await FirebaseController.getPurchaseHistory(Auth.currentUser.uid);
+
+        for (let i = 0; i < carts.length; i++) {
+            const p = carts[i].items.find(i => i.docId == productId);
+            if (p) {
+                bought = true;
+                break;
+            }
+        }
+    }
+
     // add new review
     html += `
         <h5> Customer reviews </h5>
-        <div class="${Auth.currentUser ? 'd-block' : 'd-none'}" style="padding-top: 10px;"> 
+        <div class="${Auth.currentUser && (bought || Constant.adminEmails.includes(Auth.currentUser.email))
+            ? 'd-block' : 'd-none'}" style="padding-top: 10px;"> 
             <textarea id="textarea-add-new-review" placeholder="Add a review"></textarea>
             <br>
             <button id="button-add-new-review" class="btn btn-outline-info">Add a Review</button>
-        </div>
+        </div> 
+    `;
+    
 
+    html += `
         <div id="message-review-body">
         `;
 
