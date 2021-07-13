@@ -5,6 +5,8 @@ import * as Profile from '../viewpage/profile_page.js'
 import * as User from '../viewpage/user_page.js'
 import * as Product from '../viewpage/product_page.js'
 import * as ProductDetails from '../viewpage/product_details_page.js'
+import * as Auth from '../controller/auth.js'
+import * as Constant from '../model/constant.js'
 
 export const routePathnames = {
     HOME: '/',
@@ -17,13 +19,13 @@ export const routePathnames = {
 }
 
 export const routes = [
-    {pathname: routePathnames.HOME, page: Home.home_page},
-    {pathname: routePathnames.PURCHASE, page: Purchase.purchase_page},
-    {pathname: routePathnames.CART, page: Cart.cart_page},
-    {pathname: routePathnames.PROFILE, page: Profile.profile_page},
-    {pathname: routePathnames.USERS, page: User.users_page},
-    {pathname: routePathnames.PRODUCTS, page: Product.product_page},
-    {pathname: routePathnames.ITEM, page: ProductDetails.product_details_page},
+    { pathname: routePathnames.HOME, page: Home.home_page },
+    { pathname: routePathnames.PURCHASE, page: Purchase.purchase_page },
+    { pathname: routePathnames.CART, page: Cart.cart_page },
+    { pathname: routePathnames.PROFILE, page: Profile.profile_page },
+    { pathname: routePathnames.USERS, page: User.users_page },
+    { pathname: routePathnames.PRODUCTS, page: Product.product_page },
+    { pathname: routePathnames.ITEM, page: ProductDetails.product_details_page },
 ];
 
 export function routing(pathname, hash) {
@@ -31,8 +33,15 @@ export function routing(pathname, hash) {
     if (route) {
         if (hash && hash.length > 1)
             route.page(hash.substring(1));
-        else 
-            route.page();
-    } else  routes[0].page();
+        else {
+            if (!Auth.currentUser || !Constant.adminEmails.includes(Auth.currentUser.email))
+                route.page();
+            else routes[5].page();
+        }
+    } else if (Auth.currentUser && Constant.adminEmails.includes(Auth.currentUser.email)) {
+        routes[5].page();
+    }
+    else
+        routes[0].page();
 
 }

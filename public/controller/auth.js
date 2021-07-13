@@ -92,7 +92,6 @@ export function addEventListeners() {
 
             history.pushState(null, null, Route.routePathnames.HOME);
             Route.routing(window.location.pathname, window.location.hash);
-
         }
     });
 

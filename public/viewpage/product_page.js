@@ -6,6 +6,7 @@ import * as Util from './util.js'
 import * as Route from '../controller/route.js'
 import * as Edit from '../controller/edit_product.js'
 import * as Auth from '../controller/auth.js'
+import * as ProductDetails from './product_details_page.js'
 
 let imageFile2Upload
 
@@ -112,6 +113,8 @@ export async function product_page() {
             Util.enableButton(button, label);
         });
     }
+
+    ProductDetails.addViewButtonListeners();
 }
 
 async function addNewProduct(form) {
@@ -154,7 +157,10 @@ function buildProductCard(product) {
     <div id="card-${product.docId}" class="card" style="width: 18rem; display: inline-block">
         <img src="${product.imageURL}" class="card-img-top">
         <div class="card-body">
-            <h5 class="card-title">${product.name}</h5>
+            <form method="post" class="d-inline form-view-detail">
+                <input type="hidden" name="productId" value="${product.docId}">
+                <button class="btn btn-lg card-title">${product.name}</button>
+            </form>
             <p class="card-text">$ ${product.price}<br>${product.summary}</p>
         </div>
         <form class="form-edit-product float-start" method="post">

@@ -28,10 +28,10 @@ export function addViewFormSubmitEvent(form) {
 }
 
 export async function product_details_page(productId) {
-    if (!Auth.currentUser) {
-        Element.root.innerHTML = '<h1>Protected Page</h1>';
-        return;
-    }
+    // if (!Auth.currentUser) {
+    //     Element.root.innerHTML = '<h1>Protected Page</h1>';
+    //     return;
+    // }
     if (!productId) {
         Util.info('Error', 'Product Id is null; invalid access');
         return;
@@ -57,7 +57,7 @@ export async function product_details_page(productId) {
         <div style="display:inline-block; vertical-align:top;">
             <img src="${product.imageURL}" width="400" height="400">
         </div>
-        <div class="card" style="width: 500; height: 400px; margin-left: 80px; display:inline-block">
+        <div class="card" style="width: 60rem; height: 400px; margin-left: 80px; display:inline-block">
             <div class="card-header">${product.name}</div>
             <div class="card-body">
                 <h5 class="card-subtitle mb-2" style="color: green;">Price: ${Util.currency(product.price)}</h5><hr>
@@ -71,7 +71,7 @@ export async function product_details_page(productId) {
     // add new review
     html += `
         <h5> Customer reviews </h5>
-        <div id="add-new-review" style="padding-top: 10px;"> 
+        <div class="${Auth.currentUser ? 'd-block' : 'd-none'}" style="padding-top: 10px;"> 
             <textarea id="textarea-add-new-review" placeholder="Add a review"></textarea>
             <br>
             <button id="button-add-new-review" class="btn btn-outline-info">Add a Review</button>
@@ -216,7 +216,8 @@ function buildReviewView(review) {
         </div>
         <input id="review-${review.docId}-content" name="content" value="${review.content}" disabled>
     `;
-    if (review.uid == Auth.currentUser.uid)
+
+    if (Auth.currentUser && review.uid == Auth.currentUser.uid)
         html += `
             <form class="form-edit-review" method="post" style="display: inline-block; padding: 0 0 7px 7px">
                 <input type="hidden" name="docId" value="${review.docId}">
@@ -228,6 +229,13 @@ function buildReviewView(review) {
                 <button class="btn btn-outline-success" type="submit">Update</button>
             </form>
             <form class="form-delete-review" method="post" style="display:inline-block; padding-left: 8px">
+                <input type="hidden" name="docId" value="${review.docId}">
+                <button class="btn btn-outline-danger" type="submit">Delete</button>
+            </form> 
+        `;
+    else if (Auth.currentUser && Constant.adminEmails.includes(Auth.currentUser.email))
+        html += `
+            <form class="form-delete-review" method="post" style="display:inline-block; padding: 0 0 7px 7px">
                 <input type="hidden" name="docId" value="${review.docId}">
                 <button class="btn btn-outline-danger" type="submit">Delete</button>
             </form> 
