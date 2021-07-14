@@ -70,7 +70,8 @@ export async function home_page() {
         });
     }
 
-    Saved.addSaveButtonListeners();
+    if (Auth.currentUser)
+        Saved.addSaveButtonListeners();
     ProductDetails.addViewButtonListeners();
 }
 
@@ -79,7 +80,7 @@ export function buildProductView(product, index) {
     <div class="card" style="width: 18rem; display: inline-block;">
         <div class="container" style="padding: 0 0 0 0">
             <img src="${product.imageURL}" class="card-img-top">
-            <form method="post" class="product-save-form">
+            <form method="post" class="product-save-form ${Auth.currentUser ? 'd-block' : 'd-none'}">
                 <input type="hidden" name="productId" value="${product.docId}">
                 <button id="save-button-${product.docId}" value="unsave" class="top-right" style="border:none; background:none;">
                     <img src="images/star.png" class="rounded-circle" height="30px">
