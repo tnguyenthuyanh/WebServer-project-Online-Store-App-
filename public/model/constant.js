@@ -10,6 +10,7 @@ export const collectionNames = {
     PURCHASE_HISTORY: 'purchase_history',
     ACCOUNT_INFO: 'account_info',
     REVIEW: 'reviews',
+    SAVED_PRODUCTS: 'saved_products',
 }
 
 export const storageFolderNames = {

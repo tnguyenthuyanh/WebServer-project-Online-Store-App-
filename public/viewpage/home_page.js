@@ -6,6 +6,7 @@ import * as Util from './util.js'
 import * as Auth from '../controller/auth.js'
 import { ShoppingCart } from '../model/ShoppingCart.js'
 import * as ProductDetails from './product_details_page.js'
+import * as Saved from './saved_page.js'
 
 export function addEventListeners() {
     Element.menuHome.addEventListener('click', async () => {
@@ -69,13 +70,23 @@ export async function home_page() {
         });
     }
 
+    Saved.addSaveButtonListeners();
     ProductDetails.addViewButtonListeners();
 }
 
-function buildProductView(product, index) {
+export function buildProductView(product, index) {
     return `
     <div class="card" style="width: 18rem; display: inline-block;">
-        <img src="${product.imageURL}" class="card-img-top">
+        <div class="container" style="padding: 0 0 0 0">
+            <img src="${product.imageURL}" class="card-img-top">
+            <form method="post" class="product-save-form">
+                <input type="hidden" name="productId" value="${product.docId}">
+                <button id="save-button-${product.docId}" value="unsave" class="top-right" style="border:none; background:none;">
+                    <img src="images/star.png" class="rounded-circle" height="30px">
+                </button>
+            </form>
+        </div>
+
         <div class="card-body">
             <form method="post" class="d-inline form-view-detail">
                 <input type="hidden" name="productId" value="${product.docId}">

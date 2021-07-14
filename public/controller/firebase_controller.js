@@ -2,6 +2,7 @@ import { AccountInfo } from '../model/account_info.js';
 import * as Constant from '../model/constant.js'
 import { Product } from '../model/Product.js';
 import { Review } from '../model/review.js';
+import { Saved } from '../model/saved.js';
 import { ShoppingCart } from '../model/ShoppingCart.js';
 import * as Auth from './auth.js'
 
@@ -111,8 +112,9 @@ export async function getProductById(docId) {
     const doc = await firebase.firestore().collection(Constant.collectionNames.PRODUCTS)
         .doc(docId).get();
     if (doc.exists) {
-        const { name, summary, price, hide, imageName, imageURL } = doc.data();
-        const p = { name, summary, price, hide, imageName, imageURL };
+        // const { name, summary, price, hide, imageName, imageURL } = doc.data();
+        // const p = { name, summary, price, hide, imageName, imageURL };
+        const p = new Product(doc.data());
         p.docId = doc.id;
         return p;
     }
@@ -200,4 +202,38 @@ export async function deleteReview(docId) {
 export async function updateReview(docId, data) {
     await firebase.firestore().collection(Constant.collectionNames.REVIEW)
                     .doc(docId).update(data);
+}
+
+export async function getSavedList() {
+    let productList = [];
+    const snapShot = await firebase.firestore()
+            .collection(Constant.collectionNames.SAVED_PRODUCTS)
+            .where('uid', '==', Auth.currentUser.uid)
+            .get();
+    
+    snapShot.forEach(doc => {
+        const t = new Saved(doc.data());
+        t.docId = doc.id;
+        productList.push(t);
+    });
+    return productList;
+}
+
+export async function saveProduct(product) {
+    const ref = await firebase.firestore()
+            .collection(Constant.collectionNames.SAVED_PRODUCTS)
+            .add(product.serialize());
+}
+
+export async function unsaveProduct(productId) {
+    const product = await firebase.firestore().collection(Constant.collectionNames.SAVED_PRODUCTS)
+            .where('productId', '==', productId)
+            .get();
+    
+    await firebase.firestore().collection(Constant.collectionNames.SAVED_PRODUCTS).doc(product.docs[0].id).delete()
+                .then(function (docRef) {
+                    console.log("Successfully deleted from Saved_Product collection!");
+                }).catch(function (e) {
+                    console.error("Error deleting", e);
+                });
 }

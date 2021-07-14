@@ -23,6 +23,17 @@ export function enableButton(button, label) {
     button.disabled = false;
 }
 
+export function switchSavedButton(button, isSaved) {
+    if (isSaved) {
+        button.innerHTML = '<img src="images/star-saved.png" class="rounded-circle" height="30px">';
+        button.value = "saved";
+    }
+    else {
+        button.innerHTML = '<img src="images/star.png" class="rounded-circle" height="30px">';
+        button.value = "unsave";
+    }
+}
+
 // https://www.sitepoint.com/delay-sleep-pause-wait/
 export function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));

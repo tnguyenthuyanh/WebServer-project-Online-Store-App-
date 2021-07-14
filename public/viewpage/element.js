@@ -5,6 +5,7 @@ export const root = document.getElementById('root');
 export const menuSignIn = document.getElementById('menu-signin');
 export const menuHome = document.getElementById('menu-home');
 export const menuPurchases = document.getElementById('menu-purchases');
+export const menuSaved = document.getElementById('menu-saved');
 export const menuSignout = document.getElementById('menu-signout');
 export const menuProducts = document.getElementById('menu-products');
 export const menuCart = document.getElementById('menu-cart');

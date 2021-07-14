@@ -58,3 +58,10 @@ textarea {
     font-size: 30px;
     text-align: center;
 }
+
+.top-right {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+}
+
