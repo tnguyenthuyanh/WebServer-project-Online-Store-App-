@@ -237,3 +237,79 @@ export async function unsaveProduct(productId) {
                     console.error("Error deleting", e);
                 });
 }
+
+
+export async function sortProduct(option) {
+    const productList = [];
+    let snapShot;
+    if (option == 'Name: Z-A') {
+        snapShot = await firebase.firestore()
+            .collection(Constant.collectionNames.PRODUCTS)
+            .orderBy('name', 'desc')
+            .get();
+    }
+    else if (option == 'Name: A-Z') {
+        snapShot = await firebase.firestore()
+            .collection(Constant.collectionNames.PRODUCTS)
+            .orderBy('name')
+            .get();
+    } 
+    else if (option == 'Price: highest first') {
+        snapShot = await firebase.firestore()
+            .collection(Constant.collectionNames.PRODUCTS)
+            .orderBy('price', 'desc')
+            .get();
+    } 
+    else if (option == 'Price: lowest first') {
+        snapShot = await firebase.firestore()
+            .collection(Constant.collectionNames.PRODUCTS)
+            .orderBy('price')
+            .get();
+    } 
+
+    for (let i = 0; i < snapShot.size; i++) {
+        if (snapShot.docs[i].data().hide == 1)
+            continue;
+        const t = new Product(snapShot.docs[i].data());
+        t.docId = snapShot.docs[i].id;
+        productList.push(t);
+    }
+    // snapShot.forEach(doc => {
+    //     const t = new Product(doc.data());
+    //     t.docId = doc.id;
+    //     productList.push(t);
+    // });
+    return productList;
+}
+
+export async function searchThreadsByTitle(keywordsArray) {
+    const threadList = [];
+    const snapShot = await firebase.firestore()
+            .collection(Constant.collectionNames.THREADs)
+            .where('title', 'in', keywordsArray)
+            .orderBy('timestamp', 'desc')
+            .get();
+    snapShot.forEach(doc => {
+        const t = new Thread(doc.data());
+        t.docId = doc.id;
+        threadList.push(t);
+    });
+
+    return threadList;
+}
+
+export async function searchThreadsByUser(keywordsArray) {
+    const threadList = [];
+    const snapShot = await firebase.firestore()
+            .collection(Constant.collectionNames.THREADs)
+            .where('email', 'in', keywordsArray)
+            .orderBy('timestamp', 'desc')
+            .get();
+    snapShot.forEach(doc => {
+        const t = new Thread(doc.data());
+        t.docId = doc.id;
+        threadList.push(t);
+    });
+
+    return threadList;
+}

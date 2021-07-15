@@ -24,12 +24,12 @@ export function enableButton(button, label) {
 }
 
 export function switchSavedButton(button, isSaved) {
-    if (isSaved) {
+    if (isSaved) { 
         button.innerHTML = '<img src="images/star-saved.png" class="rounded-circle" height="30px">';
         button.value = "saved";
     }
-    else {
-        button.innerHTML = '<img src="images/star.png" class="rounded-circle" height="30px">';
+    else { // <a href="https://www.freeiconspng.com/img/13226">Icon Free White Star</a>
+        button.innerHTML = '<img src="images/star-unsave.png" class="rounded-circle" height="30px">';
         button.value = "unsave";
     }
 }

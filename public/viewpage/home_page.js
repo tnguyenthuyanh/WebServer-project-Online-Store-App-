@@ -15,12 +15,45 @@ export function addEventListeners() {
         await home_page();
         Util.enableButton(Element.menuHome, label);
     });
+
 }
 
 export let cart;
 
 export async function home_page() {
-    let html = '<h1> Enjoy Shopping!</h1>'
+    let html = '<h1> Enjoy Shopping!</h1>';
+
+    html += `
+        <div style="width: 100%;">
+            <div class="modal-menus-post-auth" style="width: 500px;">
+                <form id="form-search" class="d-flex">
+                    <input name="searchKeys" class="form-control me-2" type="search" placeholder="Search"
+                        aria-label="Search">
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                </form>
+            </div>
+            <div class="btn-toolbar">
+                <div class="dropdown modal-menus-post-auth">
+                    <form id="form-sort" class="d-flex">
+
+                    <button class="btn btn-secondary btn-sm dropdown-toggle" id="dropdownMenuButton"
+                        data-bs-toggle="dropdown" type="submit" aria-expanded="false">
+                        Search by
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <li><a class="dropdown-item title-option">Price: lowest first</a></li>
+                        <li><a class="dropdown-item keywords-option">Price: highest first</a></li>
+                        <li><a class="dropdown-item user-option">Name: A-Z</a></li>
+                        <li><a class="dropdown-item user-option">Name: Z-A</a></li>
+                    </ul>
+                </form>
+                
+                </div>
+            </div>
+        </div>
+    `;
+
+
 
     let products;
     try {
@@ -30,7 +63,7 @@ export async function home_page() {
                 const product = products.find(p => item.docId == p.docId)
                 if (!product) {
                     cart.removeWholeItem(item);
-                } 
+                }
                 else {
                     product.qty = item.qty;
                 }
@@ -48,31 +81,13 @@ export async function home_page() {
 
     Element.root.innerHTML = html;
 
-    const decForms = document.getElementsByClassName('form-dec-qty');
-    for (let i = 0; i < decForms.length; i++) {
-        decForms[i].addEventListener('submit', e => {
-            e.preventDefault();
-            const p = products[e.target.index.value];
-            cart.removeItem(p);
-            document.getElementById('qty-' + p.docId).innerHTML = (p.qty == null || p.qty == 0) ? 'Add' : p.qty;
-            Element.shoppingCartCount.innerHTML = cart.getTotalQty();
-        });
-    }
-
-    const incForms = document.getElementsByClassName('form-inc-qty');
-    for (let i = 0; i < decForms.length; i++) {
-        incForms[i].addEventListener('submit', e => {
-            e.preventDefault();
-            const p = products[e.target.index.value];
-            cart.addItem(p);
-            document.getElementById('qty-' + p.docId).innerHTML = p.qty;
-            Element.shoppingCartCount.innerHTML = cart.getTotalQty();
-        });
-    }
+    addIncAndDecFormListener(products);
 
     if (Auth.currentUser)
         Saved.addSaveButtonListeners();
+
     ProductDetails.addViewButtonListeners();
+    addSortEventListener();
 }
 
 export function buildProductView(product, index) {
@@ -83,7 +98,7 @@ export function buildProductView(product, index) {
             <form method="post" class="product-save-form ${Auth.currentUser ? 'd-block' : 'd-none'}">
                 <input type="hidden" name="productId" value="${product.docId}">
                 <button id="save-button-${product.docId}" value="unsave" class="top-right" style="border:none; background:none;">
-                    <img src="images/star.png" class="rounded-circle" height="30px">
+                    <img src="images/star-unsave.png" class="rounded-circle" height="30px">
                 </button>
             </form>
         </div>
@@ -115,6 +130,30 @@ export function buildProductView(product, index) {
     `;
 }
 
+export function addIncAndDecFormListener(products) {
+    const decForms = document.getElementsByClassName('form-dec-qty');
+    for (let i = 0; i < decForms.length; i++) {
+        decForms[i].addEventListener('submit', e => {
+            e.preventDefault();
+            const p = products[e.target.index.value];
+            cart.removeItem(p);
+            document.getElementById('qty-' + p.docId).innerHTML = (p.qty == null || p.qty == 0) ? 'Add' : p.qty;
+            Element.shoppingCartCount.innerHTML = cart.getTotalQty();
+        });
+    }
+
+    const incForms = document.getElementsByClassName('form-inc-qty');
+    for (let i = 0; i < decForms.length; i++) {
+        incForms[i].addEventListener('submit', e => {
+            e.preventDefault();
+            const p = products[e.target.index.value];
+            cart.addItem(p);
+            document.getElementById('qty-' + p.docId).innerHTML = p.qty;
+            Element.shoppingCartCount.innerHTML = cart.getTotalQty();
+        });
+    }
+}
+
 export function initShoppingCart() {
 
     const cartString = window.localStorage.getItem('cart-' + Auth.currentUser.uid);
@@ -125,4 +164,46 @@ export function initShoppingCart() {
     }
 
     Element.shoppingCartCount.innerHTML = cart.getTotalQty();
+}
+
+export function addSortEventListener() {
+    let option_value = '';
+    Array.from(document.getElementsByClassName('dropdown-item')).forEach((option) => {
+        option.addEventListener('click', async (event) => {
+            option_value = event.target.innerText;
+            document.getElementById("dropdownMenuButton").innerHTML = option_value;
+            const productList = await FirebaseController.sortProduct(option_value);
+            let card = document.getElementsByClassName('card');
+
+            while (card[0]) {
+                card[0].parentNode.removeChild(card[0]);
+            }
+
+            if (cart) {
+                cart.items.forEach(item => {
+                    const product = productList.find(p => item.docId == p.docId)
+                    if (!product) {
+                        cart.removeWholeItem(item);
+                    } 
+                    else {
+                        product.qty = item.qty;
+                    }
+                });
+                Element.shoppingCartCount.innerHTML = cart.getTotalQty();
+            }
+
+            for (let i = 0; i < productList.length; i++) {
+                Element.root.innerHTML += buildProductView(productList[i], i);
+            }
+
+            addSortEventListener()
+            addIncAndDecFormListener(productList);
+
+            if (Auth.currentUser)
+                Saved.addSaveButtonListeners();
+
+            ProductDetails.addViewButtonListeners();
+        });
+    });
+
 }

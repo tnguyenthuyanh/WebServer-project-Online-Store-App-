@@ -6,8 +6,6 @@ import * as Route from '../controller/route.js'
 import * as Auth from '../controller/auth.js'
 import { Saved } from '../model/saved.js'
 import * as ProductDetails from './product_details_page.js'
-import { ShoppingCart } from '../model/ShoppingCart.js'
-
 
 export function addEventListeners() {
     Element.menuSaved.addEventListener('click', async () => {
@@ -35,15 +33,12 @@ export async function saved_page() {
 
     let cart = Home.cart;
     if (cart) {
-        cart.items.forEach(item => {
-            const product = productList.find(p => item.docId == p.docId)
-            if (!product) {
-                cart.removeWholeItem(item);
-            } 
-            else {
-                product.qty = item.qty;
-            }
-        });
+        for (let i = 0; i< cart.items.length; i++) {
+            const product = productList.find(p => cart.items[i].docId == p.docId)
+            if (!product)
+                continue
+            product.qty = cart.items[i].qty;
+        }
         Element.shoppingCartCount.innerHTML = cart.getTotalQty();
     }
 
@@ -55,29 +50,7 @@ export async function saved_page() {
 
     Element.root.innerHTML = html;
 
-    const decForms = document.getElementsByClassName('form-dec-qty');
-    for (let i = 0; i < decForms.length; i++) {
-        decForms[i].addEventListener('submit', e => {
-            e.preventDefault();
-            const p = productList[e.target.index.value];
-            cart.removeItem(p);
-            document.getElementById('qty-' + p.docId).innerHTML = (p.qty == null || p.qty == 0) ? 'Add' : p.qty;
-            Element.shoppingCartCount.innerHTML = cart.getTotalQty();
-        });
-    }
-
-    const incForms = document.getElementsByClassName('form-inc-qty');
-    for (let i = 0; i < decForms.length; i++) {
-        incForms[i].addEventListener('submit', e => {
-            e.preventDefault();
-            console.log(productList[e.target.index.value])
-            const p = productList[e.target.index.value];
-            cart.addItem(p);
-            document.getElementById('qty-' + p.docId).innerHTML = p.qty;
-            Element.shoppingCartCount.innerHTML = cart.getTotalQty();
-        });
-    }
-
+    Home.addIncAndDecFormListener(productList);
     addSaveButtonListeners();
     ProductDetails.addViewButtonListeners();
 }

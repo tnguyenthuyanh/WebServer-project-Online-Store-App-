@@ -56,9 +56,9 @@ export async function product_details_page(productId) {
     let html = `
     <div style="text-align: center;">
         <div style="display:inline-block; vertical-align:top;">
-            <img src="${product.imageURL}" width="400" height="400">
+            <img src="${product.imageURL}" width="300" height="300">
         </div>
-        <div class="card" style="width: 60rem; height: 400px; margin-left: 80px; display:inline-block">
+        <div class="card" style="width: 45rem; height: 300px; margin-left: 60px; display:inline-block">
             <div class="card-header">${product.name}</div>
             <div class="card-body">
                 <h5 class="card-subtitle mb-2" style="color: green;">Price: ${Util.currency(product.price)}</h5><hr>
