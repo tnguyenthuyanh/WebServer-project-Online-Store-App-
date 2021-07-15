@@ -24,36 +24,23 @@ export async function home_page() {
     let html = '<h1> Enjoy Shopping!</h1>';
 
     html += `
-        <div style="width: 100%;">
-            <div class="modal-menus-post-auth" style="width: 500px;">
-                <form id="form-search" class="d-flex">
-                    <input name="searchKeys" class="form-control me-2" type="search" placeholder="Search"
-                        aria-label="Search">
-                    <button class="btn btn-outline-success" type="submit">Search</button>
-                </form>
-            </div>
-            <div class="btn-toolbar">
-                <div class="dropdown modal-menus-post-auth">
-                    <form id="form-sort" class="d-flex">
-
-                    <button class="btn btn-secondary btn-sm dropdown-toggle" id="dropdownMenuButton"
-                        data-bs-toggle="dropdown" type="submit" aria-expanded="false">
-                        Search by
-                    </button>
-                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <li><a class="dropdown-item title-option">Price: lowest first</a></li>
-                        <li><a class="dropdown-item keywords-option">Price: highest first</a></li>
-                        <li><a class="dropdown-item user-option">Name: A-Z</a></li>
-                        <li><a class="dropdown-item user-option">Name: Z-A</a></li>
-                    </ul>
-                </form>
-                
-                </div>
-            </div>
+    <br>
+        <div class="dropdown modal-menus-post-auth d-block" style="width: 100%;">
+            <form id="form-sort" class="d-flex">
+                <button class="btn btn-secondary btn-sm dropdown-toggle" id="dropdownMenuButton"
+                    data-bs-toggle="dropdown" type="submit" aria-expanded="false">
+                    Sort by
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <li><a class="dropdown-item title-option">Price: lowest first</a></li>
+                    <li><a class="dropdown-item keywords-option">Price: highest first</a></li>
+                    <li><a class="dropdown-item user-option">Name: A-Z</a></li>
+                    <li><a class="dropdown-item user-option">Name: Z-A</a></li>
+                </ul>
+            </form>
         </div>
+    <br>
     `;
-
-
 
     let products;
     try {
