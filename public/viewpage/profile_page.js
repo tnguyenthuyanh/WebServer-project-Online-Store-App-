@@ -143,6 +143,8 @@ export async function profile_page() {
             </td>
         </tr>
     </table>
+    <button id="delete-account-button" class="btn btn-outline-danger float-end ${!Constant.adminEmails.includes(Auth.currentUser.email) ? 'd-block' : 'd-none'}">
+        Delete Account</button>
     `;
 
     Element.root.innerHTML = html;
@@ -222,6 +224,12 @@ export async function profile_page() {
             }
         });
     }
+
+    const deleteAcctButton = document.getElementById('delete-account-button');
+    deleteAcctButton.addEventListener('click', () => {
+        if (!window.confirm("Are you sure to delete this account?")) return;
+        FirebaseController.deleteAccount();
+    });
 }
 
 function actionButtons() {

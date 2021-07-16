@@ -274,42 +274,10 @@ export async function sortProduct(option) {
         t.docId = snapShot.docs[i].id;
         productList.push(t);
     }
-    // snapShot.forEach(doc => {
-    //     const t = new Product(doc.data());
-    //     t.docId = doc.id;
-    //     productList.push(t);
-    // });
+
     return productList;
 }
 
-export async function searchThreadsByTitle(keywordsArray) {
-    const threadList = [];
-    const snapShot = await firebase.firestore()
-            .collection(Constant.collectionNames.THREADs)
-            .where('title', 'in', keywordsArray)
-            .orderBy('timestamp', 'desc')
-            .get();
-    snapShot.forEach(doc => {
-        const t = new Thread(doc.data());
-        t.docId = doc.id;
-        threadList.push(t);
-    });
-
-    return threadList;
-}
-
-export async function searchThreadsByUser(keywordsArray) {
-    const threadList = [];
-    const snapShot = await firebase.firestore()
-            .collection(Constant.collectionNames.THREADs)
-            .where('email', 'in', keywordsArray)
-            .orderBy('timestamp', 'desc')
-            .get();
-    snapShot.forEach(doc => {
-        const t = new Thread(doc.data());
-        t.docId = doc.id;
-        threadList.push(t);
-    });
-
-    return threadList;
+export function deleteAccount() {
+    firebase.auth().currentUser.delete();
 }
