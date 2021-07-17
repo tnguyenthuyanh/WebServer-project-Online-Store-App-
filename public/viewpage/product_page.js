@@ -60,7 +60,7 @@ export function addEventListeners() {
 
 export async function product_page() {
 
-    if (!Auth.currentUser) return;
+    if (!Auth.currentUser || !Constant.adminEmails.includes(Auth.currentUser.email)) return;
 
     let html = `
     <div>

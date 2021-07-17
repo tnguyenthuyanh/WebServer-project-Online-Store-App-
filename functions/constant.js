@@ -8,7 +8,9 @@ exports.adminEmails = [
 exports.collectionNames = {
     PRODUCTS: 'products',
     PURCHASE_HISTORY: 'purchase_history',
-    ACCOUNT_INFO: 'account_info'
+    ACCOUNT_INFO: 'account_info',
+    REVIEW: 'reviews',
+    SAVED_PRODUCTS: 'saved_products',
 }
 
 exports.storageFolderNames = {

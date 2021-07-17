@@ -8,7 +8,6 @@ let imageFile2Upload;
 
 export function addEventListeners() {
     Element.formEditProduct.imageButton.addEventListener('change', e => {
-        console.log('1st')
         imageFile2Upload = e.target.files[0];
         if (!imageFile2Upload) {
             Element.formEditProduct.imageTag.src = null;

@@ -100,20 +100,10 @@ export async function addProduct(product) {
     await cf_addProduct(product);
 }
 
-//const cf_getProductById = firebase.functions().httpsCallable('cf_getProductById');
 export async function getProductById(docId) {
-    // const result = await cf_getProductById(docId);
-    // if (result.data) {
-    //     const product = new Product(result.data);
-    //     product.docId = result.data.docId;
-    //     return product; 
-    // } else  
-    //     return null;
     const doc = await firebase.firestore().collection(Constant.collectionNames.PRODUCTS)
         .doc(docId).get();
     if (doc.exists) {
-        // const { name, summary, price, hide, imageName, imageURL } = doc.data();
-        // const p = { name, summary, price, hide, imageName, imageURL };
         const p = new Product(doc.data());
         p.docId = doc.id;
         return p;
@@ -127,6 +117,9 @@ export async function updateProduct(product) {
     const data = product.serializeForUpdate();
     await cf_updateProduct({ docId, data });
 
+    if (product.hide == '1')
+        deleteSavedProducts(docId);
+
 }
 
 const cf_deleteProduct = firebase.functions().httpsCallable('cf_deleteProduct');
@@ -135,6 +128,20 @@ export async function deleteProduct(docId, imageName) {
     const ref = firebase.storage().ref()
         .child(Constant.storageFolderNames.PRODUCT_IMAGES + imageName);
     await ref.delete();
+    
+    deleteSavedProducts(docId);
+    
+}
+
+async function deleteSavedProducts(productId) {
+    // delete all productId in saved_products
+    const product = await firebase.firestore().collection(Constant.collectionNames.SAVED_PRODUCTS)
+    .where('productId', '==', productId)
+    .get();
+
+    for (let i = 0; i < product.size; i++) {
+        await firebase.firestore().collection(Constant.collectionNames.SAVED_PRODUCTS).doc(product.docs[i].id).delete();
+    }
 }
 
 const cf_getUserList = firebase.functions().httpsCallable('cf_getUserList');
@@ -228,6 +235,7 @@ export async function saveProduct(product) {
 export async function unsaveProduct(productId) {
     const product = await firebase.firestore().collection(Constant.collectionNames.SAVED_PRODUCTS)
             .where('productId', '==', productId)
+            .where('uid', '==', Auth.currentUser.uid)
             .get();
     
     await firebase.firestore().collection(Constant.collectionNames.SAVED_PRODUCTS).doc(product.docs[0].id).delete()

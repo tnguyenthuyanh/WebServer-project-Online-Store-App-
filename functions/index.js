@@ -89,6 +89,7 @@ async function deleteProduct(docId, context) {
     try {
         await admin.firestore().collection(Constant.collectionNames.PRODUCTS)
                     .doc(docId).delete();
+        
     } catch (e) {
         if (Constant.DEV) console.log(e);
         throw new functions.https.HttpsError('internal', 'deleteProduct failed');
