@@ -17,7 +17,7 @@ let accountInfo;
 export async function profile_page() {
     let html = '<h1>Profile Page</h1>';
 
-    if (!Auth.currentUser || !Constant.adminEmails.includes(Auth.currentUser.email)) {
+    if (!Auth.currentUser) {
         html += '<h2>Protected Page</h2>';
         Element.root.innerHTML = html;
         return;

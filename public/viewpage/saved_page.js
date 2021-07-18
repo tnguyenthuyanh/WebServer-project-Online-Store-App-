@@ -28,15 +28,12 @@ export async function saved_page() {
     let productList = [];
     for (let i = 0; i < savedList.length; i++ ) {
         const product = await FirebaseController.getProductById(savedList[i].productId);
-        // if (product.hide == '1')
-        //     continue;
         productList.push(product);
     }
 
     let cart = Home.cart;
     if (cart) {
         for (let i = 0; i< cart.items.length; i++) {
-        console.log(cart.items[i])
 
             const product = productList.find(p => cart.items[i].docId == p.docId)
             if (!product)

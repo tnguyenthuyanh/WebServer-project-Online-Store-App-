@@ -25,7 +25,6 @@ export function addEventListeners() {
             e.target.value = "1";
         else 
             e.target.value = "0";
-        console.log(e.target.value);
     });
 
     Element.formEditProduct.hideCheckBox.addEventListener('click', e => {
@@ -33,7 +32,6 @@ export function addEventListeners() {
             e.target.value = "1";
         else 
             e.target.value = "0"
-        console.log(e.target.value);
     });
 
     Element.formAddProduct.form.addEventListener('submit', async e => {
@@ -60,7 +58,11 @@ export function addEventListeners() {
 
 export async function product_page() {
 
-    if (!Auth.currentUser || !Constant.adminEmails.includes(Auth.currentUser.email)) return;
+    if (!Auth.currentUser || !Constant.adminEmails.includes(Auth.currentUser.email)) {
+        let html = '<h2>Protected Page</h2>';
+        Element.root.innerHTML = html;
+        return;
+    }
 
     let html = `
     <div>

@@ -46,15 +46,16 @@ export async function home_page() {
     try {
         products = await FirebaseController.getProductList();
         if (cart) {
-            cart.items.forEach(item => {
-                const product = products.find(p => item.docId == p.docId)
+            const cartLen = cart.items.length;
+            for (let i = cartLen - 1; i >= 0; i--) {
+                const product = products.find(p => cart.items[i].docId == p.docId)
                 if (!product) {
-                    cart.removeWholeItem(item);
+                    cart.removeWholeItem(cart.items[i]);
                 }
                 else {
-                    product.qty = item.qty;
+                    product.qty = cart.items[i].qty;
                 }
-            });
+            }
             Element.shoppingCartCount.innerHTML = cart.getTotalQty();
         }
     } catch (e) {
@@ -167,15 +168,16 @@ export function addSortEventListener() {
             }
 
             if (cart) {
-                cart.items.forEach(item => {
-                    const product = productList.find(p => item.docId == p.docId)
+                const cartLen = cart.items.length;
+                for (let i = cartLen - 1; i >= 0; i--) {
+                    const product = products.find(p => cart.items[i].docId == p.docId)
                     if (!product) {
-                        cart.removeWholeItem(item);
-                    } 
-                    else {
-                        product.qty = item.qty;
+                        cart.removeWholeItem(cart.items[i]);
                     }
-                });
+                    else {
+                        product.qty = cart.items[i].qty;
+                    }
+                }
                 Element.shoppingCartCount.innerHTML = cart.getTotalQty();
             }
 

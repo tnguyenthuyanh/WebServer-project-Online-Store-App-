@@ -16,7 +16,11 @@ export function addEventListeners() {
 
 export async function users_page() {
     
-    if (!Auth.currentUser) return;
+    if (!Auth.currentUser || !Constant.adminEmails.includes(Auth.currentUser.email)) {
+        let html = '<h2>Protected Page</h2>';
+        Element.root.innerHTML = html;
+        return;
+    }
 
     let html = `
         <h1> Welcome to User Management Page</h1>

@@ -28,11 +28,6 @@ export function addViewFormSubmitEvent(form) {
 }
 
 export async function product_details_page(productId) {
-    // if (!Auth.currentUser) {
-    //     Element.root.innerHTML = '<h1>Protected Page</h1>';
-    //     return;
-    // }
-
     if (!productId) {
         Util.info('Error', 'Product Id is null; invalid access');
         return;
@@ -42,10 +37,11 @@ export async function product_details_page(productId) {
     let reviews;
     try {
         product = await FirebaseController.getProductById(productId);
-        if (!product) {
-            Util.info('Error', 'Product does not exist');
+        if (!product || product.hide == '1') {
+            Util.info('Error', 'Product does not exist or you are not allowed to access');
             return;
         }
+
         reviews = await FirebaseController.getReviewList(productId);
     } catch (e) {
         if (Constant.DEV) console.log(e);

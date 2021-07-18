@@ -5,7 +5,7 @@ const admin = require("firebase-admin");
 const serviceAccount = require("./account_key.json");
 
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
+    credential: admin.credential.cert(serviceAccount)
 });
 
 const Constant = require('./constant.js')
@@ -19,6 +19,7 @@ exports.cf_getUserList = functions.https.onCall(getUserList);
 exports.cf_updateUser = functions.https.onCall(updateUser);
 exports.cf_deleteUser = functions.https.onCall(deleteUser);
 exports.cf_deletePurchaseHistory = functions.https.onCall(deletePurchaseHistory);
+exports.cf_deleteReview = functions.https.onCall(deleteReview);
 
 function isAdmin(email) {
     return Constant.adminEmails.includes(email);
@@ -88,8 +89,8 @@ async function deleteProduct(docId, context) {
 
     try {
         await admin.firestore().collection(Constant.collectionNames.PRODUCTS)
-                    .doc(docId).delete();
-        
+            .doc(docId).delete();
+
     } catch (e) {
         if (Constant.DEV) console.log(e);
         throw new functions.https.HttpsError('internal', 'deleteProduct failed');
@@ -106,7 +107,7 @@ async function updateProduct(productInfo, context) {
 
     try {
         await admin.firestore().collection(Constant.collectionNames.PRODUCTS)
-                    .doc(productInfo.docId).update(productInfo.data);
+            .doc(productInfo.docId).update(productInfo.data);
     } catch (e) {
         if (Constant.DEV) console.log(e);
         throw new functions.https.HttpsError('internal', 'updateProduct failed');
@@ -121,10 +122,10 @@ async function getProductById(data, context) {
     }
     try {
         const doc = await admin.firestore().collection(Constant.collectionNames.PRODUCTS)
-                    .doc(data).get();
+            .doc(data).get();
         if (doc.exists) {
-            const {name, summary, price, hide, imageName, imageURL} = doc.data();
-            const p = {name, summary, price, hide, imageName, imageURL};
+            const { name, summary, price, hide, imageName, imageURL } = doc.data();
+            const p = { name, summary, price, hide, imageName, imageURL };
             p.docId = doc.id;
             return p;
         } else {
@@ -145,11 +146,11 @@ async function getProductListByAdmin(data, context) {
     try {
         let products = [];
         const snapShot = await admin.firestore().collection(Constant.collectionNames.PRODUCTS)
-                            .orderBy('name')
-                            .get();
+            .orderBy('name')
+            .get();
         snapShot.forEach(doc => {
-            const {name, price, summary, hide, imageName, imageURL} =  doc.data();
-            const p = {name, price, summary, hide, imageName, imageURL};
+            const { name, price, summary, hide, imageName, imageURL } = doc.data();
+            const p = { name, price, summary, hide, imageName, imageURL };
             p.docId = doc.id;
             products.push(p);
         });
@@ -169,7 +170,7 @@ async function addProduct(data, context) {
     // data: serialized product object
     try {
         await admin.firestore().collection(Constant.collectionNames.PRODUCTS)
-                    .add(data);
+            .add(data);
     } catch (e) {
         if (Constant.DEV) console.log(e);
         throw new functions.https.HttpsError('internal', 'addProduct failed');
@@ -185,9 +186,25 @@ async function deletePurchaseHistory(data, context) {
 
     try {
         await admin.firestore().collection(Constant.collectionNames.PURCHASE_HISTORY)
-                    .doc(data).delete();
+            .doc(data).delete();
     } catch (e) {
         if (Constant.DEV) console.log(e);
         throw new functions.https.HttpsError('internal', 'deletePurchaseHistory failed');
+    }
+}
+
+async function deleteReview(data, context) {
+    
+    if (context.auth.token.email != data.email && !isAdmin(context.auth.token.email)) {
+        if (Constant.DEV) console.log('not admin', context.auth.token.email);
+        throw new functions.https.HttpsError('unauthenticated', 'Only admin or person reviewing may invoke this function');
+    }
+
+    try {
+        await admin.firestore().collection(Constant.collectionNames.REVIEW)
+            .doc(data.docId).delete();
+    } catch (e) {
+        if (Constant.DEV) console.log(e);
+        throw new functions.https.HttpsError('internal', 'deleteReview failed');
     }
 }

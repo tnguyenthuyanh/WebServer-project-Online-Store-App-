@@ -31,6 +31,7 @@ export const routes = [
     { pathname: routePathnames.SAVED, page: Saved.saved_page },
 ];
 
+
 export function routing(pathname, hash) {
     const route = routes.find(r => r.pathname == pathname);
     if (route) {
@@ -39,7 +40,10 @@ export function routing(pathname, hash) {
         else {
             if (!Auth.currentUser || !Constant.adminEmails.includes(Auth.currentUser.email))
                 route.page();
-            else routes[5].page();
+            else if (pathname = routePathnames.HOME &&  Constant.adminEmails.includes(Auth.currentUser.email))
+                routes[5].page();
+            else 
+                route.page();
         }
     } else if (Auth.currentUser && Constant.adminEmails.includes(Auth.currentUser.email)) {
         routes[5].page();

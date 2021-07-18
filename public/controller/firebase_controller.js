@@ -174,7 +174,6 @@ export async function uploadImage(imageFile, imageName) {
 
 const cf_deletePurchaseHistory = firebase.functions().httpsCallable('cf_deletePurchaseHistory');
 export async function deletePurchaseHistory(docId) {
-    console.log(docId);
     await cf_deletePurchaseHistory(docId);
 }
 
@@ -201,9 +200,10 @@ export async function addReview(review) {
     return ref.id;
 }
 
+const cf_deleteReview = firebase.functions().httpsCallable('cf_deleteReview');
 export async function deleteReview(docId) {
-    await firebase.firestore().collection(Constant.collectionNames.REVIEW)
-                    .doc(docId).delete();
+    const email = Auth.currentUser.email;
+    await cf_deleteReview({docId, email});
 }
 
 export async function updateReview(docId, data) {
