@@ -15,7 +15,7 @@ export async function signOut() {
 }
 
 export async function updateAccount(newPassword) {
-    await firebase.auth().currentUser.updatePassword(newPassword)
+    await firebase.auth().currentUser.updatePassword(newPassword);
 }
 
 export async function getProductList() {
