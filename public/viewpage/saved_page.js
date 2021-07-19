@@ -17,8 +17,6 @@ export function addEventListeners() {
     });
 }
 
-
-
 export async function saved_page() {
     if (!Auth.currentUser) {
         Element.root.innerHTML = '<h1>Access not allowed.</h1>';

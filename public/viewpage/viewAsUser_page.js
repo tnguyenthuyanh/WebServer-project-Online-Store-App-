@@ -2,6 +2,7 @@ import * as Element from './element.js'
 import * as Home from './home_page.js';
 import * as Product from './product_page.js'
 import * as Util from './util.js'
+import * as Route from '../controller/route.js'
 
 export function addEventListeners() {
     Element.menuViewAsCustomer.addEventListener('click', async e => {
@@ -19,6 +20,7 @@ export function addEventListeners() {
                 elements[i].style.display = 'block';
             }
             Element.menuViewAsCustomer.style.display = 'block';  
+            history.pushState(null, null, Route.routePathnames.HOME);
             await Home.home_page();
             Util.enableButton(e.target, backToAdminPageLabel);
         } 
@@ -32,6 +34,7 @@ export function addEventListeners() {
             for (let i = 0; i < elements.length; i++) {
                 elements[i].style.display = 'none';
             }
+            history.pushState(null, null, Route.routePathnames.PRODUCTS);
             await Product.product_page();
             Util.enableButton(e.target, viewAsUserLabel);
         }

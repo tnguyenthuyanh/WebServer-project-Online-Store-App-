@@ -170,7 +170,7 @@ export function addSortEventListener() {
             if (cart) {
                 const cartLen = cart.items.length;
                 for (let i = cartLen - 1; i >= 0; i--) {
-                    const product = products.find(p => cart.items[i].docId == p.docId)
+                    const product = productList.find(p => cart.items[i].docId == p.docId)
                     if (!product) {
                         cart.removeWholeItem(cart.items[i]);
                     }

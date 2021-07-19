@@ -52,7 +52,7 @@ export function addEventListeners() {
                 elements[i].style.display = 'block';
             }
 
-            if (Constant.adminEmails.includes(user.email)) {
+            if (Constant.adminEmails.includes(user.email)) { 
                 elements = document.getElementsByClassName('admin');
                 for (let i = 0; i < elements.length; i++) {
                     elements[i].style.display = 'block';
@@ -61,8 +61,8 @@ export function addEventListeners() {
                 for (let i = 0; i < elements.length; i++) {
                     elements[i].style.display = 'none';
                 }
+                Element.menuViewAsCustomer.innerHTML = 'View as Customer';
 
-                //history.pushState(null, null, Route.routePathnames.PRODUCTS);
             } else {
                 elements = document.getElementsByClassName('admin');
                 for (let i = 0; i < elements.length; i++) {
@@ -72,8 +72,6 @@ export function addEventListeners() {
                 for (let i = 0; i < elements.length; i++) {
                     elements[i].style.display = 'block';
                 }
-
-                //history.pushState(null, null, Route.routePathnames.HOME);
 
             }
             Route.routing(window.location.pathname, window.location.hash);
